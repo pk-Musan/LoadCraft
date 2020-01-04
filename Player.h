@@ -2,13 +2,15 @@
 #define _PLAYER_H_
 
 #include "Actor.h"
+#include "Map.h"
+#include <tuple>
 
 class Player : public Actor {
 private:
-		
+	
 public:
 	Player();
-	bool breakBlock( int x, int y );
+	std::tuple< int, int > attack( int dx, int dy );
 };
 
 #endif // !_PLAYER_H_

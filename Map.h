@@ -11,8 +11,6 @@ private:
 
 public:
 	Map( char *filename, Player *pl );
-	void readFile( char *filename );
-	void setPlayerPosition( Player *pl );
 };
 
 #endif // !_MAP_H_

@@ -1,9 +1,12 @@
 #include "Player.h"
 
 Player::Player() {
-
+	
 }
 
-bool Player::breakBlock( int x, int y ) {
+std::tuple< int, int > Player::attack( int dx, int dy ) {
+	/*
 	
+	*/
+	return { ( int )( x / size ) + dx, ( int )( y / size ) + dy };
 }

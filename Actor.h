@@ -2,7 +2,7 @@
 #define _ACTOR_H_
 
 class Actor {
-	private:
+	protected:
 		float x, y;	// キャラクタの座標．
 		float size; // キャラクタの大きさ．
 

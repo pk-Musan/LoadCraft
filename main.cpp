@@ -1,10 +1,13 @@
 #include "DxLib.h"
+#include "Game.h"
 #include "Player.h"
 #include "Map.h"
 
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+
+Game game;
 
 void gameloop();
 void init( Player *pl, Map *map );
@@ -20,7 +23,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	WaitKey();
 	*/
 
-	gameloop();
+	game.loop();
 
 	DxLib_End();
 
@@ -55,7 +58,10 @@ void init( Player *pl, Map *map ) {
 	char filename[] = "stage.txt";
 
 	pl = new Player();
-	map = new Map( filename, pl );
+	map = new Map( filename );
+	int startX, startY;
+	std::tie( startX, startY ) = map->getStartPos();
+	pl->setPos( startX, startY );
 }
 
 void input() {

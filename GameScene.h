@@ -8,7 +8,8 @@
 class GameScene : public Scene {
 private:
 	Player *player = 0;
-	std::vector<Map> maps;
+	std::vector<Map*> maps;
+	// int currentMapNum;
 
 public:
 	GameScene( char *filename );

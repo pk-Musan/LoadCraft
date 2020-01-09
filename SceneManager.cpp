@@ -1,6 +1,8 @@
 #include "SceneManager.h"
+#include "TitleScene.h"
 
 void SceneManager::init() {
+	mScene = new TitleScene();
 	mScene->init();
 }
 

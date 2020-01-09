@@ -2,7 +2,6 @@
 #define _PLAYER_H_
 
 #include "Actor.h"
-#include "Map.h"
 #include "Block.h"
 #include <vector>
 #include <tuple>

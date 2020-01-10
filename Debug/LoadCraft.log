@@ -1,2 +1,52 @@
-﻿  main.cpp
+﻿  GameScene.cpp
+  Player.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(163,47): warning C4244: '初期化中': '_Ty' から '_Ty' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+          and
+          [
+              _Ty=int
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(234): message : コンパイル対象の関数 テンプレート インスタンス化 'std::_Tuple_val<_This>::_Tuple_val<_Ty>(_Other &&)' のリファレンスを確認してください
+          with
+          [
+              _This=int,
+              _Ty=float,
+              _Other=float
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(234): message : コンパイル対象の関数 テンプレート インスタンス化 'std::_Tuple_val<_This>::_Tuple_val<_Ty>(_Other &&)' のリファレンスを確認してください
+          with
+          [
+              _This=int,
+              _Ty=float,
+              _Other=float
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(315): message : コンパイル対象の関数 テンプレート インスタンス化 'std::tuple<int,int>::tuple<std::_Exact_args_t,_Ty,_Ty,0>(_Tag,_This2 &&,_Ty &&)' のリファレンスを確認してください
+          with
+          [
+              _Ty=float,
+              _Tag=std::_Exact_args_t,
+              _This2=float
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(315): message : コンパイル対象の関数 テンプレート インスタンス化 'std::tuple<int,int>::tuple<std::_Exact_args_t,_Ty,_Ty,0>(_Tag,_This2 &&,_Ty &&)' のリファレンスを確認してください
+          with
+          [
+              _Ty=float,
+              _Tag=std::_Exact_args_t,
+              _This2=float
+          ]
+C:\Users\murotani\source\repos\LoadCraft\Player.cpp(22): message : コンパイル対象の関数 テンプレート インスタンス化 'std::tuple<int,int>::tuple<float,float,0>(_This2 &&,float &&) noexcept' のリファレンスを確認してください
+          with
+          [
+              _This2=float
+          ]
+C:\Users\murotani\source\repos\LoadCraft\Player.cpp(22): message : コンパイル対象の関数 テンプレート インスタンス化 'std::tuple<int,int>::tuple<float,float,0>(_This2 &&,float &&) noexcept' のリファレンスを確認してください
+          with
+          [
+              _This2=float
+          ]
+  TitleScene.cpp
+  コードを生成中...
   LoadCraft.vcxproj -> C:\Users\murotani\source\repos\LoadCraft\Debug\LoadCraft.exe

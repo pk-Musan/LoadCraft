@@ -2,7 +2,7 @@
 
 class Scene {
 private:
-	int image;
+	//int image;
 
 public:
 	virtual void init() = 0;

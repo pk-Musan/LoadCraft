@@ -9,15 +9,18 @@
 class Player : public Actor {
 private:
 	int power;
-	std::vector<Block> blocks;
+	std::vector<Block*> blocks;
+	int imageHandle;
 	
 public:
-	Player();
+	Player( int imagehandle );
 	void setPos( int sx, int sy );
 	std::tuple< int, int > setBlock( int dx, int dy );
 	std::tuple< int, int > attack( int dx, int dy );
-	void getBlock( Block block );
+	void getBlock( Block* block );
 	int getPower() { return power; }
+	void move( float dx, float dy );
+	void draw();
 };
 
 #endif // !_PLAYER_H_

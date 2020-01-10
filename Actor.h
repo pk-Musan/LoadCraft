@@ -1,6 +1,8 @@
 #ifndef _ACTOR_H_
 #define _ACTOR_H_
 
+#include "DxLib.h"
+
 class Actor {
 
 protected:
@@ -10,10 +12,7 @@ protected:
 	float jumpPower; // キャラクタのジャンプ力．
 
 public:
-	virtual void move( float dx, float dy, char* map ) = 0;
-	void draw() {
-
-	}
+	virtual void move( float dx, float dy ) = 0;
 };
 
 #endif // !_ACTOR_H_

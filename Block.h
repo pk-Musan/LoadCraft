@@ -6,13 +6,15 @@
 class Block {
 
 protected:
-	int x, y;
-	int size;
+	float x, y;
+	float size = 32.0F;
 	int durability;
 	int imageType;
 
 public:
 	virtual void attacked( int power ) = 0;
+	float getX() { return x; }
+	float getY() { return y; }
 	bool isBroken() { 
 		if ( durability <= 0 ) return true;
 		else return false;
@@ -21,7 +23,7 @@ public:
 		return imageType;
 	};
 	void draw( int imageHandle ) {
-		DrawGraph( x - size / 2, y - size / 2, imageHandle, TRUE );
+		DrawGraph( ( int )( x - size * 0.5F ), ( int )( y - size * 0.5F ), imageHandle, TRUE );
 	};
 };
 

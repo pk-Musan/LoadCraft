@@ -10,18 +10,23 @@
 class GameScene : public Scene {
 private:
 	Player* player = 0;
-	std::vector<Map*> maps;
+	float dx, dy; // x, y•ûŒü‚ÌˆÚ“®—Ê
+	float jumpSpeed; // y•ûŒü‚Ì‘¬‚³
+	float g; // d—Í‰Á‘¬“x
+	//std::vector<Map*> maps;
 	Map* map = 0;
 	// int currentMapNum;
 
 public:
 	GameScene( const char *filename );
+	virtual ~GameScene();
 	void init();
 	Scene* update();
 	void draw();
-	void input();
+	void charaMove( float charaTop, float charaBottom, float charaLeft, float charaRight, float chipSize );
+	void attackBlock( float charaX, float charaY,  float chipSize );
 	//void readFile( const char** buffer, int* size, const char* filename );
-	void readFile( std::string** buffer, int* size, const char* filename );
+	void readFile( std::string** buffer, const char* filename );
 };
 
 #endif // !_GAMESCENE_H_

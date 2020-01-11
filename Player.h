@@ -13,13 +13,27 @@ private:
 	int imageHandle;
 	
 public:
-	Player( int imagehandle );
+	Player();
+	~Player();
 	void setPos( int sx, int sy );
-	std::tuple< int, int > setBlock( int dx, int dy );
-	std::tuple< int, int > attack( int dx, int dy );
+	//std::tuple< int, int > setBlock( int dx, int dy );
+	//std::tuple< int, int > attack( int dx, int dy );
 	void getBlock( Block* block );
+
+	float getX() { return x; }
+	float getY() { return y; }
+	float getSize() { return size; }
+	float getSpeed() { return speed; }
+	float getJumpPower() { return jumpPower; }
 	int getPower() { return power; }
-	void move( float dx, float dy );
+
+	float getTop() { return y - size * 0.5F + 3.0F; }
+	float getBottom() { return y + size * 0.5F - 1.0F; }
+	float getLeft() { return x - size * 0.5F + 4.0F; }
+	float getRight() { return x + size * 0.5F - 1.0F - 3.0F; }
+
+	void moveX( float dx );
+	void moveY( float dy );
 	void draw();
 };
 

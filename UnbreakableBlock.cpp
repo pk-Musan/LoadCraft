@@ -1,9 +1,8 @@
 #include "UnbreakableBlock.h"
 
 UnbreakableBlock::UnbreakableBlock( int x, int y, int imageType ) {
-	this->size = 32;
-	this->x = x * size + size / 2;
-	this->y = y * size + size / 2;
+	this->x = ( float )x * size + size * 0.5F;
+	this->y = ( float )y * size + size * 0.5F;
 	this->imageType = imageType;
 	durability = 100;
 }

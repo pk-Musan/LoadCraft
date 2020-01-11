@@ -2,40 +2,44 @@
 #define _MAP_H_
 
 #include "Block.h"
-//#include "Player.h"
 #include <vector>
-#include <tuple>
 
-typedef enum {
+enum MapObject {
 	OBJ_SPACE,
 	OBJ_BLOCK,
-	OBJ_BREAKABLE_BLOCK,
+	OBJ_UNBREAKABLE_BLOCK,
 	OBJ_PLAYER,
 
 	OBJ_UNKNOWN
-} MapObject;
+};
 
 class Map {
 private:
-	//int* state = 0;
-
 	MapObject* mapObjects = 0;
 	int width;
 	int height;
-	int startX;
-	int startY;
+	int startX, startY;
+	int goalX, goalY;
 	std::vector<Block*> blocks;
 	int imageHandles[2];
 
 public:
+	const float CHIP_SIZE;
+
+public:
 	Map( const char* stageData, int fileSize );
+	~Map();
 	void setSize( const char* stageData, int fileSeize );
-	std::tuple< int, int > getStartPos();
-	void update( int x, int y, int type );
-	bool hitCheck( int x, int y );
+	int getStartX() { return startX; }
+	int getStartY() { return startY; }
+	MapObject getMapChip( float tx, float ty );
+	Block* getBlock( float x, float y );
+	void eraseBlock( float x, float y );
+	bool hitCheck( float x, float y );
+	bool isBlock( float x, float y );
+	bool isGoal( float x, float y );
 	void createObject( int type );
 	void draw();
-	
 };
 
 #endif // !_MAP_H_

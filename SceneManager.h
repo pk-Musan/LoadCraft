@@ -8,6 +8,7 @@ private:
 
 public:
 	void init();
-	void update();
+	Scene* update();
 	void draw();
+	void finalize();
 };

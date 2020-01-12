@@ -24,6 +24,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LoadCraft</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>RoadCraft</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,6 +154,8 @@
   <ItemGroup>
     <ClCompile Include="EndingScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="KeyBoard.cpp" />
+    <ClCompile Include="Loader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuScene.cpp" />
@@ -168,6 +171,8 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="EndingScene.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="KeyBoard.h" />
+    <ClInclude Include="Loader.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="NormalBlock.h" />
@@ -179,7 +184,8 @@
     <ClInclude Include="UnbreakableBlock.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="stageData.txt" />
+    <Text Include="stageData1.txt" />
+    <Text Include="stageData2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

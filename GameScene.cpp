@@ -44,6 +44,16 @@ void GameScene::init() {
 	player->setPos( plX, plY );
 	cameraX = player->getX() - ( 640.0F * 0.5F );
 	cameraY = player->getY() - ( 480.0F * 0.5F );
+
+	if ( cameraX < 0.0F ) cameraX = 0.0F;
+	else if ( cameraX + 640.0F > ( float )( map->getWidth() * map->CHIP_SIZE ) ) {
+		cameraX = ( float )( map->getWidth() * map->CHIP_SIZE ) - 640.0F;
+	}
+
+	if ( cameraY < 0.0F ) cameraY = 0.0F;
+	else if ( cameraY + 480.0F > ( float )( map->getHeight() * map->CHIP_SIZE ) ) {
+		cameraY = ( float )( map->getHeight() * map->CHIP_SIZE ) - 480.0F;
+	}
 }
 
 Scene* GameScene::update() {

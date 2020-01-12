@@ -12,6 +12,10 @@ protected:
 	float speed; // キャラクタの速度．
 	float jumpPower; // キャラクタのジャンプ力．
 
+	int direction;
+	bool attackFlag;
+	int attackAnimationCount;
+
 public:
 };
 

@@ -1,13 +1,25 @@
 #include "DxLib.h"
 #include "Player.h"
+#include "NormalBlock.h"
 
 Player::Player() : power( 2 ) {
-	imageHandle = LoadGraph( "Asset/player.png" );
+	imageHandles[RIGHT] = LoadGraph( "Asset/player_right.png" );
+	imageHandles[RIGHT_ATTACK_1] = LoadGraph( "Asset/player_right_attack1.png" );
+	imageHandles[RIGHT_ATTACK_2] = LoadGraph( "Asset/player_right_attack2.png" );
+	imageHandles[LEFT] = LoadGraph( "Asset/player_left.png" );
+	imageHandles[LEFT_ATTACK_1] = LoadGraph( "Asset/player_left_attack1.png" );
+	imageHandles[LEFT_ATTACK_2] = LoadGraph( "Asset/player_left_attack2.png" );
+
 	x = 0.0F;
 	y = 0.0F;
 	size = 32.0F;
 	speed = 2.0F;
 	jumpPower = 6.0F;
+	selectedItemNum = blocks.size();
+
+	direction = 1; // 1: 右, -1: 左
+	attackFlag = false;
+	attackAnimationCount = 0;
 }
 
 Player::~Player() {
@@ -15,7 +27,10 @@ Player::~Player() {
 		delete b;
 		b = 0;
 	}
-	DeleteGraph( imageHandle );
+
+	for ( int i = 0; i < PLAYER_MAX_INDEX; i++ ) {
+		DeleteGraph( imageHandles[i] );
+	}
 }
 
 void Player::setPos( int sx, int sy ) {
@@ -33,8 +48,17 @@ std::tuple< int, int > Player::setBlock( int dx, int dy ) {
 }
 */
 
-void Player::getBlock( Block* block ) {
+void Player::getBlock( int maxDurability, int imageType ) {
+	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
 	blocks.push_back( block );
+}
+
+void Player::setDirection( int dir ) {
+	direction = dir;
+}
+
+void Player::attack() {
+	attackFlag = true;
 }
 
 void Player::moveX( float dx ) {
@@ -45,6 +69,25 @@ void Player::moveY( float dy ) {
 	y += dy;
 }
 
-void Player::draw() {
-	DrawGraph( ( int )( x - size * 0.5F ), ( int )( y - size * 0.5F ), imageHandle, TRUE );
+void Player::draw( float cameraX, float cameraY ) {
+	// 持っているブロックの表示
+	float X, Y;
+	X = x - cameraX;
+	Y = y - cameraY;
+
+	if ( attackFlag ) {
+		if ( direction > 0 ) {
+			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[RIGHT + attackAnimationCount / 6], TRUE );
+		} else if ( direction < 0 ) {
+			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[LEFT + attackAnimationCount / 6], TRUE );
+		}
+		attackAnimationCount++;
+		if ( attackAnimationCount >= 18 ) {
+			attackFlag = false;
+			attackAnimationCount = 0;
+		}
+	} else {
+		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[RIGHT], TRUE );
+		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[LEFT], TRUE );
+	}
 }

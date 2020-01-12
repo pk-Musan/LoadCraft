@@ -9,21 +9,32 @@ protected:
 	float x, y;
 	float size = 32.0F;
 	int durability;
+	int maxDurability;
 	int imageType;
+
+public:
+	int brokenAnimationCount;
 
 public:
 	virtual void attacked( int power ) = 0;
 	float getX() { return x; }
 	float getY() { return y; }
-	bool isBroken() { 
+	int getMaxDurability() { return maxDurability; }
+	int getImageType() { return imageType; }
+	void setPos( float x, float y ) {
+		this->x = x;
+		this->y = y;
+	}
+	bool isBroken() {
 		if ( durability <= 0 ) return true;
 		else return false;
 	};
-	int getImageType() {
-		return imageType;
-	};
-	void draw( int imageHandle ) {
-		DrawGraph( ( int )( x - size * 0.5F ), ( int )( y - size * 0.5F ), imageHandle, TRUE );
+	void draw( float cameraX, float cameraY, int imageHandle ) {
+		float X, Y;
+		X = x - cameraX;
+		Y = y - cameraY;
+
+		DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandle, TRUE );
 	};
 };
 

@@ -8,8 +8,9 @@
 
 Map::Map( const char* stageData, int fileSize ) : CHIP_SIZE( 32.0F ), startX( 0 ), startY( 0 ), goalX( 0 ), goalY( 0 ) {
 	// マップで使用するオブジェクトの画像データ読み込み
-	imageHandles[0] = LoadGraph( "Asset/block0.png" );
-	imageHandles[1] = LoadGraph( "Asset/unbreakable_block.png" );
+	imageHandles[BLOCK] = LoadGraph( "Asset/block0.png" );
+	imageHandles[BLOCK_BROKEN] = LoadGraph( "Asset/block0_broken.png" );
+	imageHandles[UNBREAKABLE_BLOCK] = LoadGraph( "Asset/unbreakable_block.png" );
 
 	setSize( stageData, fileSize ); // width, heightを初期化
 	mapObjects = new MapObject[width * height];
@@ -26,14 +27,15 @@ Map::Map( const char* stageData, int fileSize ) : CHIP_SIZE( 32.0F ), startX( 0 
 		MapObject o;
 
 		switch ( stageData[i] ) {
-			case '#': o = OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, 1 ) ); break;
-			case '0': o = OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 0 ) ); break;
+			case '#': o = OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, UNBREAKABLE_BLOCK ) ); break;
+			case '1': o = OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 1, BLOCK ) ); break;
+			case '2': o = OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 5, BLOCK ) ); break;
 			case ' ': o = OBJ_SPACE; break;
 			case 'p': o = OBJ_SPACE; startX = x; startY = y; break;
 			case 'g': o = OBJ_SPACE; goalX = x; goalY = y; break;
 			case '\n': x = 0; y++; o = OBJ_UNKNOWN; break;
 
-			default: o = OBJ_UNKNOWN; break;
+			default: o = OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, UNBREAKABLE_BLOCK ) ); break;
 		}
 
 		if ( o != OBJ_UNKNOWN ) {
@@ -54,7 +56,7 @@ Map::~Map() {
 		b = 0;
 	}
 
-	for ( int i = 0; i < 2; i++ ) {
+	for ( int i = 0; i < BLOCK_MAX_INDEX; i++ ) {
 		DeleteGraph( imageHandles[i] );
 	}
 }
@@ -101,19 +103,15 @@ Block* Map::getBlock( float x, float y ) {
 	} else return nullptr;
 }
 
-void Map::eraseBlock( float tx, float ty ) {
-	int itr = 0;
-	for ( Block* b : blocks ) {
-		if ( b->getX() == tx && b->getY() == ty ) {
-			break;
+void Map::eraseBlock( /*float tx, float ty*/ ) {
+	for ( int itr = blocks.size()-1; itr >= 0; itr-- ) {
+		if ( blocks.at( itr )->isBroken() && blocks.at( itr )->brokenAnimationCount >= 20 ) {
+			int x = ( int )( blocks.at( itr )->getX() / CHIP_SIZE );
+			int y = ( int )( blocks.at( itr )->getY() / CHIP_SIZE );
+			mapObjects[y * width + x] = OBJ_SPACE;
+			blocks.erase( blocks.begin() + itr );
 		}
-		itr++;
 	}
-	blocks.erase( blocks.begin() + itr );
-
-	int x = ( int )( tx / CHIP_SIZE );
-	int y = ( int )( ty / CHIP_SIZE );
-	mapObjects[y * width + x] = OBJ_SPACE;
 }
 
 bool Map::hitCheck( float x, float y ) {
@@ -138,8 +136,23 @@ void Map::createObject( int type ) {
 
 }
 
-void Map::draw() {
+void Map::draw( float cameraX, float cameraY ) {
 	for ( Block* block : blocks ) {
-		block->draw( imageHandles[block->getImageType()] );
+		float bL, bR, bT, bB;
+		bL = block->getX() - CHIP_SIZE * 0.5F;
+		bR = block->getX() + CHIP_SIZE * 0.5F - 1.0F;
+		bT = block->getY() - CHIP_SIZE * 0.5F;
+		bB = block->getY() + CHIP_SIZE * 0.5F - 1.0F;
+
+		if ( block->isBroken() ) {
+			if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
+				block->draw( cameraX, cameraY, imageHandles[block->getImageType() + block->brokenAnimationCount / 10] );
+			}
+			block->brokenAnimationCount++;
+		} else {
+			if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
+				block->draw( cameraX, cameraY, imageHandles[block->getImageType()] );
+			}
+		}
 	}
 }

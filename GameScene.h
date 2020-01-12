@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Map.h"
+#include "Block.h"
 
 #include <string>
 
@@ -15,6 +16,9 @@ private:
 	float g; // èdóÕâ¡ë¨ìx
 	//std::vector<Map*> maps;
 	Map* map = 0;
+	Block* targetBlock = 0;
+
+	float cameraX, cameraY;
 	// int currentMapNum;
 
 public:
@@ -24,8 +28,7 @@ public:
 	Scene* update();
 	void draw();
 	void charaMove( float charaTop, float charaBottom, float charaLeft, float charaRight, float chipSize );
-	void attackBlock( float charaX, float charaY,  float chipSize );
-	//void readFile( const char** buffer, int* size, const char* filename );
+	Block* attackBlock( float charaX, float charaY,  float chipSize );
 	void readFile( std::string** buffer, const char* filename );
 };
 

@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "KeyBoard.h"
+#include "Loader.h"
 
 #include <iostream>
 #include <string>
@@ -11,16 +12,17 @@
 #include <algorithm>
 
 GameScene::GameScene( const char *filename ) {
-	std::string* stageData;
+	Loader::loadGraph();
 
+	std::string* stageData;
 	readFile( &stageData, filename );
 
 	map = new Map( stageData->c_str(), stageData->size() );
-
 	player = new Player();
+
 	dx = dy = 0.0F;
 	jumpSpeed = 0.0F;
-	g = 0.5F;
+	g = 0.4F;
 
 	delete stageData;
 }
@@ -31,6 +33,8 @@ GameScene::~GameScene() {
 
 	delete map;
 	map = 0;
+
+	Loader::deleteGraph();
 }
 
 void GameScene::init() {
@@ -164,6 +168,8 @@ void GameScene::charaMove( float plT, float plB, float plL, float plR, float cSi
 
 	// y方向の移動量を加算
 	player->moveY( dy );
+
+	// カメラの左上のY座標を更新
 	cameraY = player->getY() - ( 480.0F * 0.5F );
 	if ( cameraY < 0.0F ) cameraY = 0.0F;
 	else if ( cameraY + 480.0F > ( float )( map->getHeight() * map->CHIP_SIZE ) ) {
@@ -186,6 +192,8 @@ void GameScene::charaMove( float plT, float plB, float plL, float plR, float cSi
 
 	// x方向の移動量を加算
 	player->moveX( dx );
+
+	// カメラの左上のX座標を更新
 	cameraX = player->getX() - ( 640.0F * 0.5F );
 	if ( cameraX < 0.0F ) cameraX = 0.0F;
 	else if ( cameraX + 640.0F > ( float )( map->getWidth() * map->CHIP_SIZE ) ) {

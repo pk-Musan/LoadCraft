@@ -1,21 +1,16 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "NormalBlock.h"
+#include "Loader.h"
 
 Player::Player() : power( 2 ) {
-	imageHandles[RIGHT] = LoadGraph( "Asset/player_right.png" );
-	imageHandles[RIGHT_ATTACK_1] = LoadGraph( "Asset/player_right_attack1.png" );
-	imageHandles[RIGHT_ATTACK_2] = LoadGraph( "Asset/player_right_attack2.png" );
-	imageHandles[LEFT] = LoadGraph( "Asset/player_left.png" );
-	imageHandles[LEFT_ATTACK_1] = LoadGraph( "Asset/player_left_attack1.png" );
-	imageHandles[LEFT_ATTACK_2] = LoadGraph( "Asset/player_left_attack2.png" );
 
 	x = 0.0F;
 	y = 0.0F;
 	size = 32.0F;
 	speed = 2.0F;
 	jumpPower = 6.0F;
-	selectedItemNum = blocks.size();
+	selectedItemNum = 0;
 
 	direction = 1; // 1: 右, -1: 左
 	attackFlag = false;
@@ -23,13 +18,11 @@ Player::Player() : power( 2 ) {
 }
 
 Player::~Player() {
-	for ( Block* b : blocks ) {
-		delete b;
-		b = 0;
-	}
-
-	for ( int i = 0; i < PLAYER_MAX_INDEX; i++ ) {
-		DeleteGraph( imageHandles[i] );
+	for ( std::vector<Block*> blocks : blocksList ) {
+		for ( Block* b : blocks ) {
+			delete b;
+			b = 0;
+		}
 	}
 }
 
@@ -38,19 +31,24 @@ void Player::setPos( int sx, int sy ) {
 	y = ( float )( sy * size + size * 0.5F );
 }
 
-/*
-std::tuple< int, int > Player::attack( int dx, int dy ) {
-	return { ( int )( x / size ) + dx, ( int )( y / size ) + dy };
-}
-
-std::tuple< int, int > Player::setBlock( int dx, int dy ) {
-	return { x + dx, y + dy };
-}
-*/
-
 void Player::getBlock( int maxDurability, int imageType ) {
 	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
+	
+	// 同じタイプのブロックを持っていないか探す．
+	for ( std::vector<Block*> blocks : blocksList ) {
+		for ( Block* b : blocks ) {
+			// 同じタイプのブロックがあればその時のvectorに追加する
+			if ( b->getMaxDurability() == block->getMaxDurability() && b->getImageType() == block->getImageType() ) {
+				blocks.push_back( block );
+				return;
+			}
+		}
+	}
+
+	// 手持ちに同じタイプのブロックがなかったときは新しく，そのブロック専用のvectorを生成して追加
+	std::vector<Block*> blocks;
 	blocks.push_back( block );
+	blocksList.push_back( blocks );
 }
 
 void Player::setDirection( int dir ) {
@@ -71,15 +69,17 @@ void Player::moveY( float dy ) {
 
 void Player::draw( float cameraX, float cameraY ) {
 	// 持っているブロックの表示
+
+
 	float X, Y;
 	X = x - cameraX;
 	Y = y - cameraY;
 
 	if ( attackFlag ) {
 		if ( direction > 0 ) {
-			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[RIGHT + attackAnimationCount / 6], TRUE );
+			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT + attackAnimationCount / 6], TRUE );
 		} else if ( direction < 0 ) {
-			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[LEFT + attackAnimationCount / 6], TRUE );
+			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT + attackAnimationCount / 6], TRUE );
 		}
 		attackAnimationCount++;
 		if ( attackAnimationCount >= 18 ) {
@@ -87,7 +87,7 @@ void Player::draw( float cameraX, float cameraY ) {
 			attackAnimationCount = 0;
 		}
 	} else {
-		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[RIGHT], TRUE );
-		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), imageHandles[LEFT], TRUE );
+		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT], TRUE );
+		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT], TRUE );
 	}
 }

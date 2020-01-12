@@ -4,32 +4,17 @@
 #include "Actor.h"
 #include "Block.h"
 #include <vector>
-#include <tuple>
-
-enum PlayerImage {
-	RIGHT,
-	RIGHT_ATTACK_1,
-	RIGHT_ATTACK_2,
-	LEFT,
-	LEFT_ATTACK_1,
-	LEFT_ATTACK_2,
-
-	PLAYER_MAX_INDEX
-};
 
 class Player : public Actor {
 private:
 	int power;
-	std::vector<Block*> blocks;
+	std::vector<std::vector<Block*>> blocksList;
 	int selectedItemNum;
-	int imageHandles[PLAYER_MAX_INDEX];
 	
 public:
 	Player();
 	~Player();
 	void setPos( int sx, int sy );
-	//std::tuple< int, int > setBlock( int dx, int dy );
-	//std::tuple< int, int > attack( int dx, int dy );
 	void getBlock( int maxDurability, int imageType );
 
 	float getX() { return x; }

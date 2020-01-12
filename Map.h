@@ -4,33 +4,23 @@
 #include "Block.h"
 #include <vector>
 
-enum MapObject {
-	OBJ_SPACE,
-	OBJ_BLOCK,
-	OBJ_UNBREAKABLE_BLOCK,
-	OBJ_PLAYER,
-
-	OBJ_UNKNOWN
-};
-
-enum BlockImage {
-	BLOCK,
-	BLOCK_BROKEN,
-
-	UNBREAKABLE_BLOCK,
-
-	BLOCK_MAX_INDEX
-};
-
 class Map {
+
 private:
+	enum class MapObject {
+		OBJ_SPACE,
+		OBJ_BLOCK,
+		OBJ_UNBREAKABLE_BLOCK,
+		OBJ_PLAYER,
+
+		OBJ_UNKNOWN
+	};
 	MapObject* mapObjects = 0;
 	int width;
 	int height;
 	int startX, startY;
 	int goalX, goalY;
 	std::vector<Block*> blocks;
-	int imageHandles[BLOCK_MAX_INDEX];
 
 public:
 	const float CHIP_SIZE;

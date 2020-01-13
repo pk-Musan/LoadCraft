@@ -30,7 +30,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		frameStartTime = GetNowCount();
 
-		if ( sceneMgr.update() == NULL ) {
+		if ( sceneMgr.update() == NULL || KeyBoard::key[KEY_INPUT_Q] == 1 ) {
 			sceneMgr.finalize();
 			break;
 		}

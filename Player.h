@@ -15,7 +15,6 @@ public:
 	Player();
 	~Player();
 	void setPos( int sx, int sy );
-	void getBlock( int maxDurability, int imageType );
 
 	float getX() { return x; }
 	float getY() { return y; }
@@ -31,7 +30,10 @@ public:
 	float getLeft() { return x - size * 0.5F + 4.0F; }
 	float getRight() { return x + size * 0.5F - 1.0F - 3.0F; }
 
+	Block* putBlock( float x, float y );
+	void getBlock( int maxDurability, int imageType );
 	void setDirection( int dir );
+	void changeSelectedItemNum();
 	void attack();
 	void moveX( float dx );
 	void moveY( float dy );

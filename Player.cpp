@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "NormalBlock.h"
+#include "KeyBoard.h"
 #include "Loader.h"
 
 #include <string>
@@ -33,10 +34,42 @@ void Player::setPos( int sx, int sy ) {
 	y = ( float )( sy * size + size * 0.5F );
 }
 
+Block* Player::putBlock( float x, float y ) {
+	if ( blocksList.size() == 0 ) return nullptr;
+
+	int maxDurability = blocksList.at( selectedItemNum ).back()->getMaxDurability();
+	int imageType = blocksList.at( selectedItemNum ).back()->getImageType();
+	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
+	block->setPos( x, y );
+	
+	delete blocksList.at( selectedItemNum ).back();
+	blocksList.at( selectedItemNum ).pop_back();
+
+	if ( blocksList.at( selectedItemNum ).size() == 0 ) { // 設置したことで特定の種類のブロックがなくなったら
+		blocksList.erase( blocksList.begin() + selectedItemNum ); // その種類用のvectorを削除
+
+		if ( blocksList.size() == 0 ) selectedItemNum = 0;
+		else if ( selectedItemNum == blocksList.size() ) {
+			selectedItemNum -= 1;
+		} else selectedItemNum = selectedItemNum % blocksList.size();
+	}
+
+	return block;
+}
+
 void Player::getBlock( int maxDurability, int imageType ) {
 	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
 	
 	// 同じタイプのブロックを持っていないか探す．
+	/*
+	for ( std::vector<Block*> blocks : blocksList ) {
+		if ( blocks.size() >= 1 ) {
+			if ( blocks.back()->getMaxDurability() == block->getMaxDurability() && blocks.back()->getImageType() == block->getImageType() ) {
+				
+			}
+		}
+	}
+	*/
 	int i = 0;
 	for ( i = 0; i < ( int )blocksList.size(); i++ ) {
 		if ( blocksList.at( i ).size() >= 1 ) {
@@ -55,6 +88,16 @@ void Player::getBlock( int maxDurability, int imageType ) {
 
 void Player::setDirection( int dir ) {
 	direction = dir;
+}
+
+void Player::changeSelectedItemNum() {
+	if ( blocksList.size() == 0 ) return;
+	if ( KeyBoard::key[KEY_INPUT_S] == 1 ) { // アイテムカーソルを左に移動
+		if ( selectedItemNum == 0 ) selectedItemNum = ( int )blocksList.size() - 1;
+		else selectedItemNum -= 1;
+	} else if ( KeyBoard::key[KEY_INPUT_D] == 1 ) { // アイテムカーソルを右に移動
+		selectedItemNum = ( selectedItemNum + 1 ) % ( int )blocksList.size();
+	}
 }
 
 void Player::attack() {
@@ -97,6 +140,7 @@ void Player::draw( float cameraX, float cameraY ) {
 	DrawTriangleAA( 20.0F, 40.0F, 20.0F, 59.0F, 4.0F, 49.5F, GetColor( 240, 240, 240 ), TRUE );
 	DrawTriangleAA( 96.0F, 40.0F, 96.0F, 59.0F, 112.0F, 49.5F, GetColor( 240, 240, 240 ), TRUE );
 	if ( blocksList.size() >= 1 ) {
+		if ( blocksList.at( selectedItemNum ).size() == 0 ) return;
 		blocksList.at( selectedItemNum ).at( 0 )->setPos( 42.0F + 32.0F * 0.5F, 34.0F + 32.0F * 0.5F );
 		blocksList.at( selectedItemNum ).at( 0 )->draw( 0.0F, 0.0F, Loader::imageHandles[blocksList.at( selectedItemNum ).at( 0 )->getImageType()] );
 

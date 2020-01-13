@@ -4,6 +4,10 @@
 class MenuScene : public Scene {
 
 private:
+	bool description;
+	int cursorPos;
+	int font[2];
+	int animationCount;
 
 public:
 	MenuScene();

@@ -4,6 +4,12 @@
 int Loader::imageHandles[MAX_INDEX];
 
 void Loader::loadGraph() {
+	imageHandles[TITLE] = LoadGraph( "Asset/title.png" );
+	imageHandles[PRESS_1] = LoadGraph( "Asset/press1.png" );
+	imageHandles[PRESS_2] = LoadGraph( "Asset/press2.png" );
+	imageHandles[ANY_KEY_1] = LoadGraph( "Asset/any_key1.png" );
+	imageHandles[ANY_KEY_2] = LoadGraph( "Asset/any_key2.png" );
+
 	imageHandles[RIGHT] = LoadGraph( "Asset/player_right.png" );
 	imageHandles[RIGHT_ATTACK_1] = LoadGraph( "Asset/player_right_attack1.png" );
 	imageHandles[RIGHT_ATTACK_2] = LoadGraph( "Asset/player_right_attack2.png" );
@@ -11,9 +17,14 @@ void Loader::loadGraph() {
 	imageHandles[LEFT_ATTACK_1] = LoadGraph( "Asset/player_left_attack1.png" );
 	imageHandles[LEFT_ATTACK_2] = LoadGraph( "Asset/player_left_attack2.png" );
 
-	imageHandles[BLOCK] = LoadGraph( "Asset/block0.png" );
-	imageHandles[BLOCK_BROKEN] = LoadGraph( "Asset/block0_broken.png" );
+	imageHandles[BLOCK_1] = LoadGraph( "Asset/block1.png" );
+	imageHandles[BLOCK_1_BROKEN] = LoadGraph( "Asset/block1_broken.png" );
+	imageHandles[BLOCK_2] = LoadGraph( "Asset/block2.png" );
+	imageHandles[BLOCK_2_BROKEN] = LoadGraph( "Asset/block2_broken.png" );
+
 	imageHandles[UNBREAKABLE_BLOCK] = LoadGraph( "Asset/unbreakable_block.png" );
+
+	imageHandles[GOAL] = LoadGraph( "Asset/goal.png" );
 }
 
 void Loader::deleteGraph() {

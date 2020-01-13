@@ -4,6 +4,12 @@ class Loader {
 
 public:
 	enum Image {
+		TITLE,
+		PRESS_1,
+		PRESS_2,
+		ANY_KEY_1,
+		ANY_KEY_2,
+
 		RIGHT,
 		RIGHT_ATTACK_1,
 		RIGHT_ATTACK_2,
@@ -11,10 +17,14 @@ public:
 		LEFT_ATTACK_1,
 		LEFT_ATTACK_2,
 
-		BLOCK,
-		BLOCK_BROKEN,
+		BLOCK_1,
+		BLOCK_1_BROKEN,
+		BLOCK_2,
+		BLOCK_2_BROKEN,
 
 		UNBREAKABLE_BLOCK,
+
+		GOAL,
 
 		MAX_INDEX
 	};

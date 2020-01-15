@@ -15,6 +15,8 @@ protected:
 	int direction;
 	bool attackFlag;
 	int attackAnimationCount;
+	bool moveFlag;
+	int moveAnimationCount;
 
 public:
 };

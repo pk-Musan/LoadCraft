@@ -25,11 +25,12 @@ Map::Map( const char* stageData, int fileSize ) : CHIP_SIZE( 32.0F ), startX( 0 
 
 		switch ( stageData[i] ) {
 			case '#': o = MapObject::OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, Loader::UNBREAKABLE_BLOCK ) ); break;
-			case '1': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 1, Loader::BLOCK_1 ) ); break;
-			case '2': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 5, Loader::BLOCK_2 ) ); break;
+			case '1': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 1, Loader::BLOCK_1_CRACKED ) ); break;
+			case '2': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 5, Loader::BLOCK_2_CRACKED ) ); break;
 			case ' ': o = MapObject::OBJ_SPACE; break;
 			case 'p': o = MapObject::OBJ_SPACE; startX = x; startY = y; break;
-			case 'g': o = MapObject::OBJ_SPACE; goalX = x; goalY = y; break;
+			case 'w': o = MapObject::OBJ_WARP; warpX = x; warpY = y; warpAnimationCount = 0; break;
+			case 'g': o = MapObject::OBJ_GOAL; goalX = x; goalY = y; break;
 			case '\n': x = 0; y++; o = MapObject::OBJ_UNKNOWN; break;
 
 			default: o = MapObject::OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, Loader::UNBREAKABLE_BLOCK ) ); break;
@@ -100,13 +101,13 @@ void Map::putBlock( Block* block ) {
 	int x = ( int )( block->getX() / CHIP_SIZE );
 	int y = ( int )( block->getY() / CHIP_SIZE );
 
-	mapObjects[y * width + x] = MapObject::OBJ_BLOCK;
+	mapObjects[y * width + x] = MapObject::OBJ_UNBREAKABLE_BLOCK;
 	blocks.push_back( block );
 }
 
 void Map::eraseBlock() {
 	for ( int itr = blocks.size()-1; itr >= 0; itr-- ) {
-		if ( blocks.at( itr )->isBroken() && blocks.at( itr )->brokenAnimationCount >= 20 ) {
+		if ( blocks.at( itr )->isBroken() && blocks.at( itr )->brokenAnimationCount >= 24 ) {
 			int x = ( int )( blocks.at( itr )->getX() / CHIP_SIZE );
 			int y = ( int )( blocks.at( itr )->getY() / CHIP_SIZE );
 			mapObjects[y * width + x] = MapObject::OBJ_SPACE;
@@ -136,7 +137,8 @@ bool Map::canPutBlock( float x, float y ) {
 }
 
 bool Map::hitCheck( float x, float y ) {
-	if ( getMapChip( x, y ) != MapObject::OBJ_SPACE ) return true;
+	MapObject m = getMapChip( x, y );
+	if ( m != MapObject::OBJ_SPACE && m != MapObject::OBJ_WARP && m != MapObject::OBJ_GOAL ) return true;
 	else return false;
 }
 
@@ -145,11 +147,19 @@ bool Map::isBlock( float x, float y ) {
 	else return false;
 }
 
+bool Map::isWarp( float plX, float plY ) {
+	int x = ( int )( plX / CHIP_SIZE );
+	int y = ( int )( plY / CHIP_SIZE );
+
+	if ( mapObjects[y * width + x] == MapObject::OBJ_WARP ) return true;
+	else return false;
+}
+
 bool Map::isGoal( float plX, float plY ) {
 	int x = ( int )( plX / CHIP_SIZE );
 	int y = ( int )( plY / CHIP_SIZE );
 
-	if ( x == goalX && y == goalY ) return true;
+	if ( mapObjects[y * width + x] == MapObject::OBJ_GOAL ) return true;
 	else return false;
 }
 
@@ -161,9 +171,9 @@ void Map::draw( float cameraX, float cameraY ) {
 		bT = block->getY() - CHIP_SIZE * 0.5F;
 		bB = block->getY() + CHIP_SIZE * 0.5F - 1.0F;
 
-		if ( block->isBroken() ) {
+		if ( block->isBroken() ) { // âÛÇÍÇΩÉuÉçÉbÉNÇÃï`âÊ
 			if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
-				block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType() + block->brokenAnimationCount / 10] );
+				block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType() + block->brokenAnimationCount / 12] );
 			}
 			block->brokenAnimationCount++;
 		} else {
@@ -178,8 +188,17 @@ void Map::draw( float cameraX, float cameraY ) {
 	gR = ( float )( goalX + 1 ) * CHIP_SIZE - 1.0F;
 	gT = ( float )goalY * CHIP_SIZE;
 	gB = ( float )( goalY + 1 ) * CHIP_SIZE - 1.0F;
-
 	if ( !( gR < cameraX || gL > cameraX + 640.0F - 1.0F || gB < cameraY || gT > cameraY + 480.0F - 1.0F ) ) {
 		DrawGraph( ( int )( goalX * CHIP_SIZE - cameraX ), ( int )( goalY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::GOAL], TRUE );
 	}
+
+	float wL, wR, wT, wB;
+	wL = ( float )warpX * CHIP_SIZE;
+	wR = ( float )( warpX + 1 ) * CHIP_SIZE - 1.0F;
+	wT = ( float )warpY * CHIP_SIZE;
+	wB = ( float )( warpY + 1 ) * CHIP_SIZE - 1.0F;
+	if ( !( wR < cameraX || wL > cameraX + 640.0F - 1.0F || wB < cameraY || wT > cameraY + 480.0F - 1.0F ) ) {
+		DrawGraph( ( int )( warpX * CHIP_SIZE - cameraX ), ( int )( warpY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::WARP_1 + warpAnimationCount / 20], TRUE );
+	}
+	warpAnimationCount = ( warpAnimationCount + 1 ) % 40;
 }

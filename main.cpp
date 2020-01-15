@@ -1,6 +1,8 @@
 #include "DxLib.h"
 #include "SceneManager.h"
 #include "KeyBoard.h"
+#include "Loader.h"
+#include "Font.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	int frameStartTime;
@@ -20,6 +22,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetDrawScreen( DX_SCREEN_BACK );
 	SetWaitVSyncFlag( FALSE );
 
+	Loader::loadGraph();
+	Font::createFont();
+
 	SceneManager sceneMgr;
 	sceneMgr.init();
 
@@ -36,6 +41,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 		sceneMgr.draw();
 	}
+
+	Loader::deleteGraph();
 
 	DxLib_End();
 	return 0;

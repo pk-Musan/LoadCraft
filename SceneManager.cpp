@@ -1,12 +1,9 @@
 #include "SceneManager.h"
 #include "TitleScene.h"
-#include "Loader.h"
 
 #include <iostream>
 
 void SceneManager::init() {
-	Loader::loadGraph();
-
 	mScene = new TitleScene();
 	//std::cout << mScene << std::endl;
 	mScene->init();

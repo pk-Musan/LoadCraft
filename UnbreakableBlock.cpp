@@ -5,6 +5,8 @@ UnbreakableBlock::UnbreakableBlock( int x, int y, int imageType ) {
 	this->y = ( float )y * size + size * 0.5F;
 	this->imageType = imageType;
 	durability = 100;
+	maxDurability = durability;
+	brokenAnimationCount = 0;
 }
 
 void UnbreakableBlock::attacked( int power ) {

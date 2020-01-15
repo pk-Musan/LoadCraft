@@ -25,14 +25,15 @@ public:
 	int getDirection() { return direction; }
 	bool isAttacking() { return attackFlag; }
 
-	float getTop() { return y - size * 0.5F + 3.0F; }
+	float getTop() { return y - size * 0.5F + 4.0F; }
 	float getBottom() { return y + size * 0.5F - 1.0F; }
 	float getLeft() { return x - size * 0.5F + 4.0F; }
-	float getRight() { return x + size * 0.5F - 1.0F - 3.0F; }
+	float getRight() { return x + size * 0.5F - 1.0F - 4.0F; }
 
 	Block* putBlock( float x, float y );
 	void getBlock( int maxDurability, int imageType );
 	void setDirection( int dir );
+	void setMoveFlag( bool move );
 	void changeSelectedItemNum();
 	void attack();
 	void moveX( float dx );

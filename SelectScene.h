@@ -13,12 +13,13 @@ public:
 	};
 private:
 	int cursorPos;
-	int font[2];
+	//int font[2];
 	int animationCount;
 	const char* stages[StageData::MAX_STAGE_NUM];
 
 public:
 	SelectScene();
+	~SelectScene();
 	void init();
 	Scene* update();
 	void draw();

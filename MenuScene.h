@@ -5,8 +5,8 @@ class MenuScene : public Scene {
 
 private:
 	bool description;
+	int page;
 	int cursorPos;
-	int font[2];
 	int animationCount;
 
 public:

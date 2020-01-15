@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "NormalBlock.h"
+#include "UnbreakableBlock.h"
 #include "KeyBoard.h"
 #include "Loader.h"
 
@@ -11,13 +12,17 @@ Player::Player() : power( 2 ) {
 	x = 0.0F;
 	y = 0.0F;
 	size = 32.0F;
-	speed = 2.0F;
+	speed = 3.0F;
 	jumpPower = 6.0F;
 	selectedItemNum = 0;
 
 	direction = 1; // 1: 右, -1: 左
+	
 	attackFlag = false;
 	attackAnimationCount = 0;
+	
+	moveFlag = false;
+	moveAnimationCount = 0;
 }
 
 Player::~Player() {
@@ -37,9 +42,9 @@ void Player::setPos( int sx, int sy ) {
 Block* Player::putBlock( float x, float y ) {
 	if ( blocksList.size() == 0 ) return nullptr;
 
-	int maxDurability = blocksList.at( selectedItemNum ).back()->getMaxDurability();
+	//int maxDurability = blocksList.at( selectedItemNum ).back()->getMaxDurability();
 	int imageType = blocksList.at( selectedItemNum ).back()->getImageType();
-	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
+	Block* block = new UnbreakableBlock( 0, 0, imageType );
 	block->setPos( x, y );
 	
 	delete blocksList.at( selectedItemNum ).back();
@@ -58,8 +63,8 @@ Block* Player::putBlock( float x, float y ) {
 }
 
 void Player::getBlock( int maxDurability, int imageType ) {
-	Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
-	
+	//Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
+	Block* block = new UnbreakableBlock( 0, 0, imageType );
 	// 同じタイプのブロックを持っていないか探す．
 	/*
 	for ( std::vector<Block*> blocks : blocksList ) {
@@ -90,6 +95,10 @@ void Player::setDirection( int dir ) {
 	direction = dir;
 }
 
+void Player::setMoveFlag( bool move ) {
+	moveFlag = move;
+}
+
 void Player::changeSelectedItemNum() {
 	if ( blocksList.size() == 0 ) return;
 	if ( KeyBoard::key[KEY_INPUT_S] == 1 ) { // アイテムカーソルを左に移動
@@ -118,18 +127,21 @@ void Player::draw( float cameraX, float cameraY ) {
 	X = x - cameraX;
 	Y = y - cameraY;
 
-	if ( attackFlag ) {
-		if ( direction > 0 ) {
-			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT + attackAnimationCount / 6], TRUE );
-		} else if ( direction < 0 ) {
-			DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT + attackAnimationCount / 6], TRUE );
-		}
-		attackAnimationCount++;
-		if ( attackAnimationCount >= 18 ) {
-			attackFlag = false;
-			attackAnimationCount = 0;
-		}
-	} else {
+	if ( attackFlag ) { // 攻撃アニメーション
+		int index = 0;
+		if ( attackAnimationCount >= 0 && attackAnimationCount < 5 ) index = 0;
+		else index = 1;
+		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT_ATTACK_1 + index], TRUE );
+		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT_ATTACK_1 + index], TRUE );
+
+		attackAnimationCount = ( attackAnimationCount + 1 ) % 20;
+		if ( attackAnimationCount == 0 ) attackFlag = false;
+	} else if ( moveFlag ) { // 移動アニメーション
+		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT_WALK_1 + moveAnimationCount / 12], TRUE );
+		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT_WALK_1 + moveAnimationCount / 12], TRUE );
+
+		moveAnimationCount = ( moveAnimationCount + 1 ) % 24;
+	} else { // 通常描画
 		if ( direction > 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::RIGHT], TRUE );
 		else if ( direction < 0 ) DrawGraph( ( int )( X - size * 0.5F ), ( int )( Y - size * 0.5F ), Loader::imageHandles[Loader::LEFT], TRUE );
 	}

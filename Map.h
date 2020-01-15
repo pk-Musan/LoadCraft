@@ -11,6 +11,8 @@ public:
 		OBJ_BLOCK,
 		OBJ_UNBREAKABLE_BLOCK,
 		OBJ_PLAYER,
+		OBJ_WARP,
+		OBJ_GOAL,
 
 		OBJ_UNKNOWN
 	};
@@ -21,8 +23,10 @@ private:
 	int width;
 	int height;
 	int startX, startY;
+	int warpX, warpY;
 	int goalX, goalY;
 	std::vector<Block*> blocks;
+	int warpAnimationCount;
 
 public:
 	Map( const char* stageData, int fileSize );
@@ -42,6 +46,7 @@ public:
 	bool canPutBlock( float x, float y );
 	bool hitCheck( float x, float y );
 	bool isBlock( float x, float y );
+	bool isWarp( float x, float y );
 	bool isGoal( float x, float y );
 	//void createObject( int type );
 	void draw( float cameraX, float cameraY );

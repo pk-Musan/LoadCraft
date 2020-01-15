@@ -6,7 +6,8 @@
 class Block {
 
 protected:
-	float x, y;
+	float x;
+	float y;
 	float size = 32.0F;
 	int durability;
 	int maxDurability;

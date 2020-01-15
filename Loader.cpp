@@ -11,19 +11,31 @@ void Loader::loadGraph() {
 	imageHandles[ANY_KEY_2] = LoadGraph( "Asset/any_key2.png" );
 
 	imageHandles[RIGHT] = LoadGraph( "Asset/player_right.png" );
+	imageHandles[RIGHT_WALK_1] = LoadGraph( "Asset/player_right_walk1.png" );
+	imageHandles[RIGHT_WALK_2] = LoadGraph( "Asset/player_right_walk2.png" );
 	imageHandles[RIGHT_ATTACK_1] = LoadGraph( "Asset/player_right_attack1.png" );
 	imageHandles[RIGHT_ATTACK_2] = LoadGraph( "Asset/player_right_attack2.png" );
+
 	imageHandles[LEFT] = LoadGraph( "Asset/player_left.png" );
+	imageHandles[LEFT_WALK_1] = LoadGraph( "Asset/player_left_walk1.png" );
+	imageHandles[LEFT_WALK_2] = LoadGraph( "Asset/player_left_walk2.png" );
 	imageHandles[LEFT_ATTACK_1] = LoadGraph( "Asset/player_left_attack1.png" );
 	imageHandles[LEFT_ATTACK_2] = LoadGraph( "Asset/player_left_attack2.png" );
 
+	imageHandles[TARGET] = LoadGraph( "Asset/target.png" );
+
 	imageHandles[BLOCK_1] = LoadGraph( "Asset/block1.png" );
+	imageHandles[BLOCK_1_CRACKED] = LoadGraph( "Asset/block1_cracked.png" );
 	imageHandles[BLOCK_1_BROKEN] = LoadGraph( "Asset/block1_broken.png" );
+
 	imageHandles[BLOCK_2] = LoadGraph( "Asset/block2.png" );
+	imageHandles[BLOCK_2_CRACKED] = LoadGraph( "Asset/block2_cracked.png" );
 	imageHandles[BLOCK_2_BROKEN] = LoadGraph( "Asset/block2_broken.png" );
 
 	imageHandles[UNBREAKABLE_BLOCK] = LoadGraph( "Asset/unbreakable_block.png" );
 
+	imageHandles[WARP_1] = LoadGraph( "Asset/warp1.png" );
+	imageHandles[WARP_2] = LoadGraph( "Asset/warp2.png" );
 	imageHandles[GOAL] = LoadGraph( "Asset/goal.png" );
 }
 

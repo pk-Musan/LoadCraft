@@ -15,13 +15,20 @@ private:
 	float jumpSpeed; // y方向の速さ
 	float g; // 重力加速度
 
+	const char* filename;
 	Map* map = 0; // マップ
 	Block* targetBlock = 0; // プレイヤーが攻撃したブロック
 
-	float cameraX, cameraY; // 画面スクロール用のカメラ位置
+	float cameraX, cameraY; // 画面スクロール用のカメラ位置(左上座標)
+	int targetCursorX, targetCursorY; // ターゲットカーソルの位置（左上座標）
 
-	int font[2]; // ステージクリア時に使うフォント
+	//int font[3]; // ステージクリア時に使うフォント
 	int finishCount; // ゴール到達時からカウント開始，特定のフレーム数経過で画面遷移するためのカウント
+	int warpCount;
+
+	bool pause;
+	int pauseCursor;
+	int cursorAnimationCount;
 
 	bool readError;
 
@@ -33,8 +40,9 @@ public:
 	void draw();
 	Block* attackBlock( float charaX, float charaY, float chipSize );
 	void putBlock( float charaX, float charaY, float charaLeft, float charaRight, float charaTop, float charaBottom, float chipSize );
-	void charaMove( float charaLeft, float charaRight, float charaTop, float charaBottom, float chipSize );
-	void cameraMove();
+	void moveChara( float charaLeft, float charaRight, float charaTop, float charaBottom, float chipSize );
+	void moveCamera();
+	void moveTargetCursor();
 	void readFile( std::string** buffer, const char* filename );
 };
 

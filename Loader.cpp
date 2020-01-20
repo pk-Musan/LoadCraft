@@ -32,6 +32,11 @@ void Loader::loadGraph() {
 	imageHandles[BLOCK_2_CRACKED] = LoadGraph( "Asset/block2_cracked.png" );
 	imageHandles[BLOCK_2_BROKEN] = LoadGraph( "Asset/block2_broken.png" );
 
+	imageHandles[SPRING_BLOCK] = LoadGraph( "Asset/spring_block.png" );
+	imageHandles[SPRING_BLOCK_BROKEN] = LoadGraph( "Asset/spring_block_broken.png" );
+
+	imageHandles[DISAPPEARING_BLOCK] = LoadGraph( "Asset/disappearing_block.png" );
+
 	imageHandles[UNBREAKABLE_BLOCK] = LoadGraph( "Asset/unbreakable_block.png" );
 
 	imageHandles[WARP_1] = LoadGraph( "Asset/warp1.png" );

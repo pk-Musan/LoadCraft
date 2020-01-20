@@ -59,23 +59,25 @@ void MenuScene::draw() {
 	if ( description ) {
 		// 説明を描画
 		if ( page == 0 ) {
-			DrawStringToHandle( 50, 50, "ブロックを壊して手に入れよう！", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 50, 80, "手に入れたブロックで道を作ってゴールを目指そう！", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 50, 50, "ブロックを壊して，手に入れたブロックで道を作ろう！", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 50, 80, "迷子のポッキョくんと一緒に出口を目指すんだ！", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawGraph( 56, 130, Loader::imageHandles[Loader::RIGHT], TRUE );
-			DrawStringToHandle( 96, 136, "ポッキョくん：", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 150, 166, "洞窟探検が大好き、すぐ迷子になる", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 150, 196, "パンチでブロックをこわすことができる", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 96, 136, "ポッキョくん：探検が大好き，すぐ迷子になる", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawGraph( 56, 240, Loader::imageHandles[Loader::BLOCK_1_CRACKED], TRUE );
-			DrawStringToHandle( 96, 244, "ブロック１：一撃でこわれてしまうほどもろい", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawGraph( 56, 190, Loader::imageHandles[Loader::BLOCK_1_CRACKED], TRUE );
+			DrawStringToHandle( 96, 194, "ブロック1：一撃でこわれてしまうほどもろい", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawGraph( 56, 290, Loader::imageHandles[Loader::BLOCK_2_CRACKED], TRUE );
-			DrawStringToHandle( 96, 294, "ブロック２：ちょっと頑丈、なかなかこわれない", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawGraph( 56, 240, Loader::imageHandles[Loader::BLOCK_2_CRACKED], TRUE );
+			DrawStringToHandle( 96, 244, "ブロック2：ちょっと頑丈、なかなかこわれない", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawGraph( 40, 372, Loader::imageHandles[Loader::BLOCK_1], TRUE );
-			DrawGraph( 72, 372, Loader::imageHandles[Loader::BLOCK_2], TRUE );
-			DrawGraph( 56, 340, Loader::imageHandles[Loader::UNBREAKABLE_BLOCK], TRUE );
+			DrawGraph( 56, 290, Loader::imageHandles[Loader::SPRING_BLOCK], TRUE );
+			DrawStringToHandle( 96, 294, "ブロック3：弾力がすさまじい，とべるかも？", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+			DrawGraph( 40, 340, Loader::imageHandles[Loader::BLOCK_1], TRUE );
+			DrawGraph( 72, 340, Loader::imageHandles[Loader::BLOCK_2], TRUE );
+			DrawGraph( 40, 372, Loader::imageHandles[Loader::DISAPPEARING_BLOCK], TRUE );
+			DrawGraph( 72, 372, Loader::imageHandles[Loader::UNBREAKABLE_BLOCK], TRUE );
 			DrawStringToHandle( 114, 360, "壊せないブロック：その名のとおりである", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawStringToHandle( 290, 415, "1/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
@@ -85,17 +87,18 @@ void MenuScene::draw() {
 		} else if ( page == 1 ) {
 			DrawStringToHandle( 50, 45, "操作説明", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawStringToHandle( 60, 100, "← or →：移動", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 60, 130, "Space：ジャンプ", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 60, 160, "C +（矢印キー）：パンチ（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 60, 190, "Z +（矢印キー）：ブロックを置く（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 60, 220, "S or D：置きたいブロックの選択", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 60, 250, "Esc：ポーズ画面", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 80, "← or →：移動", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 110, "Space：ジャンプ", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 140, "C +（矢印キー）：パンチ（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 170, "Z +（矢印キー）：ブロックを置く（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 200, "S or D：置きたいブロックの選択", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 60, 230, "Esc：ポーズ画面（やり直し，遊び方説明）", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawStringToHandle( 55, 290, "ブロックへの攻撃とブロックの配置は左shiftを", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 55, 320, "一緒に押しておくとその場で止まったまま行うよ", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 55, 270, "ブロックへの攻撃とブロックの配置は左shiftを", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 55, 300, "一緒に押しておくとその場で止まったまま行うよ", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-			DrawStringToHandle( 55, 370, "※自分で置いたブロックはそれ以降こわせなくなるよ", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 55, 340, "※ブロック3以外のブロックは，手に入れてから", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 55, 370, "　置いてしまうとそれ以降こわせなくなるよ！", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawStringToHandle( 290, 415, "2/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
 			DrawStringToHandle( 480, 415, "Esc：戻る", GetColor( 255, 255, 255 ), Font::fonts[1] );
@@ -111,18 +114,18 @@ void MenuScene::draw() {
 			standardX = 400;
 			standardY = 200 - 1;
 		}
-		DrawGraph( standardX, standardY, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY - 32, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY + 32, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
-		DrawGraph( standardX + 64, standardY, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
-		DrawGraph( standardX + 96, standardY, Loader::imageHandles[Loader::LEFT + animationCount / 8], TRUE );
+		DrawGraph( standardX, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
+		DrawGraph( standardX + 32, standardY - 32, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
+		DrawGraph( standardX + 32, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
+		DrawGraph( standardX + 32, standardY + 32, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
+		DrawGraph( standardX + 64, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
+		DrawGraph( standardX + 96, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
 		
-		DrawStringToHandle( 70 + 75, 100, "遊び方", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 75 + 75, 100, "遊び方", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
-		DrawStringToHandle( 70, 200, "ステージセレクト", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 75, 200, "ステージセレクト", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
-		DrawStringToHandle( 160, 360, "Press Space Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 165, 360, "Press Space Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
 		animationCount = ( animationCount + 1 ) % 24;
 	}

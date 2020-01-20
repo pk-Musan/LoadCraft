@@ -27,11 +27,11 @@ public:
 
 	float getTop() { return y - size * 0.5F + 4.0F; }
 	float getBottom() { return y + size * 0.5F - 1.0F; }
-	float getLeft() { return x - size * 0.5F + 4.0F; }
-	float getRight() { return x + size * 0.5F - 1.0F - 4.0F; }
+	float getLeft() { return x - size * 0.5F + 7.5F; }
+	float getRight() { return x + size * 0.5F - 1.0F - 7.0F; }
 
 	Block* putBlock( float x, float y );
-	void getBlock( int maxDurability, int imageType );
+	void getBlock( Block* block );
 	void setDirection( int dir );
 	void setMoveFlag( bool move );
 	void changeSelectedItemNum();

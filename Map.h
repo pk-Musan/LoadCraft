@@ -2,6 +2,7 @@
 #define _MAP_H_
 
 #include "Block.h"
+#include "Warp.h"
 #include <vector>
 
 class Map {
@@ -9,6 +10,7 @@ public:
 	enum class MapObject {
 		OBJ_SPACE,
 		OBJ_BLOCK,
+		OBJ_SPRING_BLOCK,
 		OBJ_UNBREAKABLE_BLOCK,
 		OBJ_PLAYER,
 		OBJ_WARP,
@@ -26,6 +28,7 @@ private:
 	int warpX, warpY;
 	int goalX, goalY;
 	std::vector<Block*> blocks;
+	std::vector<Warp*> warps;
 	int warpAnimationCount;
 
 public:
@@ -49,7 +52,7 @@ public:
 	bool isWarp( float x, float y );
 	bool isGoal( float x, float y );
 	//void createObject( int type );
-	void draw( float cameraX, float cameraY );
+	void draw( float cameraX, float cameraY, bool stop );
 };
 
 #endif // !_MAP_H_

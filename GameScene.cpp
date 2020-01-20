@@ -3,6 +3,7 @@
 #include "TitleScene.h"
 #include "Map.h"
 #include "Player.h"
+#include "SpringBlock.h"
 #include "KeyBoard.h"
 #include "Loader.h"
 #include "Font.h"
@@ -31,12 +32,14 @@ GameScene::GameScene( const char *filename ) {
 
 	dx = dy = 0.0F;
 	jumpSpeed = 0.0F;
-	g = 0.4F;
+	g = 0.3F;
 	finishCount = 0;
 	warpCount = 0;
 
 	pause = false;
+	operation = false;
 	pauseCursor = 0;
+	operationPage = 0;
 
 	delete stageData;
 }
@@ -110,21 +113,36 @@ Scene* GameScene::update() {
 
 	if ( KeyBoard::key[KEY_INPUT_ESCAPE] == 1 ) pause = true;
 	if ( pause ) {
-		player->setMoveFlag( false );
-		if ( KeyBoard::key[KEY_INPUT_UP] == 1 ) {
-			pauseCursor -= 1;
-			if ( pauseCursor < 0 ) pauseCursor = 2; // 最大値を代入
-		}
-		if ( KeyBoard::key[KEY_INPUT_DOWN] == 1 ) pauseCursor = ( pauseCursor + 1 ) % 3;
+		if ( operation ) { // 操作説明画面
+			if ( KeyBoard::key[KEY_INPUT_LEFT] == 1 ) {
+				operationPage -= 1;
+				if ( operationPage < 0 ) operationPage = 0;
+			}
+			if ( KeyBoard::key[KEY_INPUT_RIGHT] == 1 ) {
+				operationPage += 1;
+				if ( operationPage > 1 ) operationPage = 1;
+			}
+			if ( KeyBoard::key[KEY_INPUT_ESCAPE] == 1 ) {
+				operation = false;
+				operationPage = 0;
+			}
+		} else { // 操作説明画面ではない
+			player->setMoveFlag( false );
+			if ( KeyBoard::key[KEY_INPUT_UP] == 1 ) {
+				pauseCursor -= 1;
+				if ( pauseCursor < 0 ) pauseCursor = 3; // 最大値を代入
+			}
+			if ( KeyBoard::key[KEY_INPUT_DOWN] == 1 ) pauseCursor = ( pauseCursor + 1 ) % 4;
 
-		if ( KeyBoard::key[KEY_INPUT_SPACE] == 1 ) {
-			if ( pauseCursor == 0 ) pause = false;
-			else if ( pauseCursor == 1 ) {
-				GameScene* gScene = new GameScene( filename );
-				return gScene;
-			} else if ( pauseCursor == 2 ) {
-				TitleScene* tScene = new TitleScene();
-				return tScene;
+			if ( KeyBoard::key[KEY_INPUT_SPACE] == 1 ) {
+				if ( pauseCursor == 0 ) pause = false;
+				else if ( pauseCursor == 1 ) {
+					GameScene* gScene = new GameScene( filename );
+					return gScene;
+				} else if ( pauseCursor == 2 ) {
+					TitleScene* tScene = new TitleScene();
+					return tScene;
+				} else if ( pauseCursor == 3 ) operation = true;
 			}
 		}
 		return this;
@@ -136,7 +154,7 @@ Scene* GameScene::update() {
 	if ( !player->isAttacking() ) {
 		if ( targetBlock != nullptr ) {
 			if ( targetBlock->isBroken() ) { // 壊れていればブロックを入手
-				player->getBlock( targetBlock->getMaxDurability(), targetBlock->getImageType() - 1 ); // 壊したブロックを本来の状態で入手
+				player->getBlock( targetBlock ); // 壊したブロックを本来の状態で入手
 				targetBlock = nullptr;
 			}
 		}
@@ -166,11 +184,14 @@ Scene* GameScene::update() {
 void GameScene::draw() {
 	if ( readError ) return;
 
-	map->draw( cameraX, cameraY );
+	bool isGoal = map->isGoal( player->getX(), player->getY() );
+	bool isWarp = map->isWarp( player->getX(), player->getY() );
+
+	map->draw( cameraX, cameraY, ( isGoal || isWarp || pause ) );
 	player->draw( cameraX, cameraY );
 	if ( targetCursorX >= 0 && targetCursorY >= 0 )	DrawGraph( targetCursorX, targetCursorY, Loader::imageHandles[Loader::TARGET], TRUE );
 
-	if ( map->isGoal( player->getX(), player->getY() ) ) {
+	if ( isGoal ) {
 		SetDrawBlendMode( DX_BLENDMODE_ALPHA, 150 );
 		DrawBox( 0, 0, ( int )( map->getWidth() * map->CHIP_SIZE ), ( int )( map->getHeight() * map->CHIP_SIZE ), GetColor( 255, 255, 255 ), TRUE );
 		SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
@@ -182,7 +203,7 @@ void GameScene::draw() {
 		finishCount = ( finishCount >= 180 ) ? 180 : finishCount + 1;
 	}
 
-	if ( map->isWarp( player->getX(), player->getY() ) ) {
+	if ( isWarp ) {
 		SetDrawBlendMode( DX_BLENDMODE_ALPHA, 255 - ( 255 - ( int )( warpCount * float( 255 / 180 ) ) ) );
 		DrawBox( 0, 0, ( int )( map->getWidth() * map->CHIP_SIZE ), ( int )( map->getHeight() * map->CHIP_SIZE ), GetColor( 255, 255, 255 ), TRUE );
 		SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
@@ -190,27 +211,78 @@ void GameScene::draw() {
 	}
 
 	if ( pause ) {
-		SetDrawBlendMode( DX_BLENDMODE_ALPHA, 150 );
+		SetDrawBlendMode( DX_BLENDMODE_ALPHA, 200 );
 		DrawBox( 0, 0, ( int )( map->getWidth() * map->CHIP_SIZE ), ( int )( map->getHeight() * map->CHIP_SIZE ), GetColor( 0, 0, 0 ), TRUE );
 		SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 
-		int standardX, standardY;
-		standardX = 400;
-		standardY = 100 + pauseCursor * 80 - 1;
-		
-		DrawGraph( standardX, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY - 32, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
-		DrawGraph( standardX + 32, standardY + 32, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
-		DrawGraph( standardX + 64, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
-		DrawGraph( standardX + 96, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+		if ( operation ) {
+			if ( operationPage == 0 ) {
+				DrawStringToHandle( 50, 50, "ブロックを壊して，手に入れたブロックで道を作ろう！", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 50, 80, "迷子のポッキョくんと一緒に出口を目指すんだ！", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-		DrawStringToHandle( 60, 100, "ゲームに戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
-		DrawStringToHandle( 60, 180, "初期位置に戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
-		DrawStringToHandle( 60, 260, "タイトルに戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
-		DrawStringToHandle( 160, 400, "Press Space Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
+				DrawGraph( 56, 130, Loader::imageHandles[Loader::RIGHT], TRUE );
+				DrawStringToHandle( 96, 136, "ポッキョくん：探検が大好き，すぐ迷子になる", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
-		cursorAnimationCount = ( cursorAnimationCount + 1 ) % 24;
+				DrawGraph( 56, 190, Loader::imageHandles[Loader::BLOCK_1_CRACKED], TRUE );
+				DrawStringToHandle( 96, 194, "ブロック1：一撃でこわれてしまうほどもろい", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawGraph( 56, 240, Loader::imageHandles[Loader::BLOCK_2_CRACKED], TRUE );
+				DrawStringToHandle( 96, 244, "ブロック2：ちょっと頑丈、なかなかこわれない", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawGraph( 56, 290, Loader::imageHandles[Loader::SPRING_BLOCK], TRUE );
+				DrawStringToHandle( 96, 294, "ブロック3：弾力がすさまじい，とべるかも？", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawGraph( 40, 340, Loader::imageHandles[Loader::BLOCK_1], TRUE );
+				DrawGraph( 72, 340, Loader::imageHandles[Loader::BLOCK_2], TRUE );
+				DrawGraph( 40, 372, Loader::imageHandles[Loader::DISAPPEARING_BLOCK], TRUE );
+				DrawGraph( 72, 372, Loader::imageHandles[Loader::UNBREAKABLE_BLOCK], TRUE );
+				DrawStringToHandle( 114, 360, "壊せないブロック：その名のとおりである", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawStringToHandle( 290, 415, "1/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 480, 415, "Esc：戻る", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawTriangleAA( 640 - 45, 480 / 2 - 15, 640 - 45, 480 / 2 + 15, 640 - 20, 480 / 2, GetColor( 255, 255, 255 ), TRUE );
+			} else if ( operationPage == 1 ) {
+				DrawStringToHandle( 50, 45, "操作説明", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawStringToHandle( 60, 80, "← or →：移動", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 60, 110, "Space：ジャンプ", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 60, 140, "C +（矢印キー）：パンチ（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 60, 170, "Z +（矢印キー）：ブロックを置く（8方向）", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 60, 200, "S or D：置きたいブロックの選択", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 60, 230, "Esc：ポーズ画面（やり直し，遊び方説明）", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawStringToHandle( 55, 270, "ブロックへの攻撃とブロックの配置は左shiftを", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 55, 300, "一緒に押しておくとその場で止まったまま行うよ", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawStringToHandle( 55, 340, "※ブロック3以外のブロックは，手に入れてから", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 55, 370, "　置いてしまうとそれ以降こわせなくなるよ！", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawStringToHandle( 290, 415, "2/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
+				DrawStringToHandle( 480, 415, "Esc：戻る", GetColor( 255, 255, 255 ), Font::fonts[1] );
+
+				DrawTriangleAA( 45, 480 / 2 - 15, 45, 480 / 2 + 15, 20, 480 / 2, GetColor( 255, 255, 255 ), TRUE );
+			}
+		} else {
+			int standardX, standardY;
+			standardX = 400;
+			standardY = 100 + pauseCursor * 60 - 1;
+
+			DrawGraph( standardX, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+			DrawGraph( standardX + 32, standardY - 32, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+			DrawGraph( standardX + 32, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+			DrawGraph( standardX + 32, standardY + 32, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+			DrawGraph( standardX + 64, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+			DrawGraph( standardX + 96, standardY, Loader::imageHandles[Loader::LEFT + cursorAnimationCount / 8], TRUE );
+
+			DrawStringToHandle( 60, 100, "ゲームに戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
+			DrawStringToHandle( 60, 160, "初期位置に戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
+			DrawStringToHandle( 60, 220, "タイトルに戻る", GetColor( 255, 255, 255 ), Font::fonts[2] );
+			DrawStringToHandle( 60, 280, "遊び方", GetColor( 255, 255, 255 ), Font::fonts[2] );
+			DrawStringToHandle( 160, 400, "Press Space Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
+
+			cursorAnimationCount = ( cursorAnimationCount + 1 ) % 24;
+		}
 	}
 }
 
@@ -404,12 +476,25 @@ void GameScene::moveChara( float plL, float plR, float plT, float plB, float cSi
 			player->setDirection( 1 );
 		}
 	}
-	if ( KeyBoard::key[KEY_INPUT_SPACE] == 1 && ( map->hitCheck( plR, plB + 1.0F ) || map->hitCheck( plL, plB + 1.0F ) ) ) jumpSpeed -= player->getJumpPower();
+	if ( KeyBoard::key[KEY_INPUT_SPACE] == 1 && ( map->hitCheck( plR, plB + 1.0F ) || map->hitCheck( plL, plB + 1.0F ) ) ) {
+		float addPower = 0.0F;
+
+		float rtbX = ( float )( ( int )( plR / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの右下ブロックの中心のX座標
+		float ltbX = ( float )( ( int )( plL / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの左下ブロックの中心のX座標
+		float tbY = ( float )( ( int )( ( plB + 1.0F ) / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの（左右問わず）下ブロックの中心のY座標
+
+		SpringBlock* rsb = dynamic_cast< SpringBlock* >( map->getBlock( rtbX, tbY ) );
+		SpringBlock* lsb = dynamic_cast< SpringBlock* >( map->getBlock( ltbX, tbY ) );
+
+		if ( rsb != nullptr ) addPower = rsb->getSpringPower();
+		else if ( lsb != nullptr ) addPower = lsb->getSpringPower();
+		jumpSpeed = -1.0F * ( player->getJumpPower() + addPower );
+	}
 
 	// y方向の当たり判定
 	if ( !( map->hitCheck( plR, plB + 1.0F ) || map->hitCheck( plL, plB + 1.0F ) ) ) { // プレイヤーの下にブロックがない
 		jumpSpeed += g;
-		if ( jumpSpeed >= 9.0F ) jumpSpeed = 9.0F;
+		if ( jumpSpeed >= 11.0F ) jumpSpeed = 11.0F;
 	}
 	dy = jumpSpeed;
 
@@ -424,7 +509,23 @@ void GameScene::moveChara( float plL, float plR, float plT, float plB, float cSi
 		if ( map->hitCheck( plR, plB + dy ) || map->hitCheck( plL, plB + dy ) ) {
 			float block_top = ( float )( ( int )( ( plB + dy ) / cSize ) ) * cSize;
 			dy = block_top - plB - 1.0F;
-			jumpSpeed = 0.0F;
+
+			float rtbX = ( float )( ( int )( plR / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの右下ブロックの中心のX座標
+			float ltbX = ( float )( ( int )( plL / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの左下ブロックの中心のX座標
+			float tbY = ( float )( ( int )( ( plB + dy + 1.0F ) / cSize ) * cSize + cSize * 0.5F ); // プレイヤーの（左右問わず）下ブロックの中心のY座標
+
+			SpringBlock* rsb = dynamic_cast< SpringBlock* >( map->getBlock( rtbX, tbY ) );
+			SpringBlock* lsb = dynamic_cast< SpringBlock* >( map->getBlock( ltbX, tbY ) );
+
+			if ( rsb != nullptr ) {
+				jumpSpeed *= ( -1.0F * rsb->getSpringCoefficient() );
+				if ( jumpSpeed >= -5.0F || KeyBoard::key[KEY_INPUT_DOWN] >= 1 ) jumpSpeed = 0.0F;
+			}
+			else if ( lsb != nullptr ) {
+				jumpSpeed *= ( -1.0F * lsb->getSpringCoefficient() );
+				if ( jumpSpeed >= -5.0F || KeyBoard::key[KEY_INPUT_DOWN] >= 1 ) jumpSpeed = 0.0F;
+			}
+			else jumpSpeed = 0.0F;
 		}
 	}
 
@@ -433,12 +534,12 @@ void GameScene::moveChara( float plL, float plR, float plT, float plB, float cSi
 
 	// x方向の当たり判定
 	if ( dx < 0 ) {
-		if ( map->hitCheck( plL + dx, plT ) || map->hitCheck( plL + dx, plB ) ) {
+		if ( map->hitCheck( plL + dx, plT ) || map->hitCheck( plL + dx, plB - 1.0F ) ) {
 			float block_right = ( plL + dx < 0.0F ) ? 0.0F : ( float )( ( int )( ( plL + dx ) / cSize ) + 1 ) * cSize;
 			dx = block_right - plL + 1.0F;
 		}
 	} else if ( dx > 0 ) {
-		if ( map->hitCheck( plR + dx, plT ) || map->hitCheck( plR + dx, plB ) ) {
+		if ( map->hitCheck( plR + dx, plT ) || map->hitCheck( plR + dx, plB - 1.0F ) ) {
 			//右側のブロックの左辺
 			float block_left = ( float )( ( int )( ( plR + dx ) / cSize ) ) * cSize;
 			dx = block_left - plR - 1.0F;
@@ -462,7 +563,7 @@ void GameScene::moveCamera() {
 	// カメラの左上のX座標を更新
 	cameraX = player->getX() - ( 640.0F * 0.5F );
 	if ( cameraX < 0.0F ) cameraX = 0.0F;
-	else if ( cameraX + 640.0F > ( float )( map->getWidth() * map->CHIP_SIZE ) ) {
+	else if ( cameraX +	640.0F > ( float )( map->getWidth() * map->CHIP_SIZE ) ) {
 		cameraX = ( float )( map->getWidth() * map->CHIP_SIZE ) - 640.0F;
 	}
 }

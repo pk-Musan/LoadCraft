@@ -2,6 +2,8 @@
 #include "Map.h"
 #include "NormalBlock.h"
 #include "UnbreakableBlock.h"
+#include "DisappearingBlock.h"
+#include "SpringBlock.h"
 #include "Loader.h"
 
 #include <algorithm>
@@ -25,11 +27,13 @@ Map::Map( const char* stageData, int fileSize ) : CHIP_SIZE( 32.0F ), startX( 0 
 
 		switch ( stageData[i] ) {
 			case '#': o = MapObject::OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, Loader::UNBREAKABLE_BLOCK ) ); break;
+			case 'd': o = MapObject::OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new DisappearingBlock( x, y, Loader::DISAPPEARING_BLOCK ) ); break;
+			case 's': o = MapObject::OBJ_SPRING_BLOCK; blocks.push_back( new SpringBlock( x, y, Loader::SPRING_BLOCK, 0.9F, 3.0F ) ); break;
 			case '1': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 1, Loader::BLOCK_1_CRACKED ) ); break;
 			case '2': o = MapObject::OBJ_BLOCK; blocks.push_back( new NormalBlock( x, y, 5, Loader::BLOCK_2_CRACKED ) ); break;
 			case ' ': o = MapObject::OBJ_SPACE; break;
 			case 'p': o = MapObject::OBJ_SPACE; startX = x; startY = y; break;
-			case 'w': o = MapObject::OBJ_WARP; warpX = x; warpY = y; warpAnimationCount = 0; break;
+			case 'w': o = MapObject::OBJ_WARP; warps.push_back( new Warp( x, y ) ); break;
 			case 'g': o = MapObject::OBJ_GOAL; goalX = x; goalY = y; break;
 			case '\n': x = 0; y++; o = MapObject::OBJ_UNKNOWN; break;
 
@@ -52,6 +56,11 @@ Map::~Map() {
 	for ( Block* b : blocks ) {
 		delete b;
 		b = 0;
+	}
+
+	for ( Warp* w : warps ) {
+		delete w;
+		w = 0;
 	}
 }
 
@@ -101,7 +110,10 @@ void Map::putBlock( Block* block ) {
 	int x = ( int )( block->getX() / CHIP_SIZE );
 	int y = ( int )( block->getY() / CHIP_SIZE );
 
-	mapObjects[y * width + x] = MapObject::OBJ_UNBREAKABLE_BLOCK;
+	if ( block->getImageType() == Loader::SPRING_BLOCK ) {
+		mapObjects[y * width + x] = MapObject::OBJ_SPRING_BLOCK;
+	} else mapObjects[y * width + x] = MapObject::OBJ_UNBREAKABLE_BLOCK;
+
 	blocks.push_back( block );
 }
 
@@ -128,10 +140,10 @@ bool Map::canPutBlock( float x, float y ) {
 	bB = getMapChip( x, y + CHIP_SIZE );
 
 
-	if ( getMapChip( x - CHIP_SIZE, y ) == MapObject::OBJ_BLOCK || getMapChip( x - CHIP_SIZE, y ) == MapObject::OBJ_UNBREAKABLE_BLOCK ) return true;
-	if ( getMapChip( x + CHIP_SIZE, y ) == MapObject::OBJ_BLOCK || getMapChip( x + CHIP_SIZE, y ) == MapObject::OBJ_UNBREAKABLE_BLOCK ) return true;
-	if ( getMapChip( x, y - CHIP_SIZE ) == MapObject::OBJ_BLOCK || getMapChip( x, y - CHIP_SIZE ) == MapObject::OBJ_UNBREAKABLE_BLOCK ) return true;
-	if ( getMapChip( x, y + CHIP_SIZE ) == MapObject::OBJ_BLOCK || getMapChip( x, y + CHIP_SIZE ) == MapObject::OBJ_UNBREAKABLE_BLOCK ) return true;
+	if ( getMapChip( x - CHIP_SIZE, y ) == MapObject::OBJ_BLOCK || getMapChip( x - CHIP_SIZE, y ) == MapObject::OBJ_UNBREAKABLE_BLOCK || getMapChip( x - CHIP_SIZE, y ) == MapObject::OBJ_SPRING_BLOCK ) return true;
+	if ( getMapChip( x + CHIP_SIZE, y ) == MapObject::OBJ_BLOCK || getMapChip( x + CHIP_SIZE, y ) == MapObject::OBJ_UNBREAKABLE_BLOCK || getMapChip( x + CHIP_SIZE, y ) == MapObject::OBJ_SPRING_BLOCK ) return true;
+	if ( getMapChip( x, y - CHIP_SIZE ) == MapObject::OBJ_BLOCK || getMapChip( x, y - CHIP_SIZE ) == MapObject::OBJ_UNBREAKABLE_BLOCK || getMapChip( x, y - CHIP_SIZE ) == MapObject::OBJ_SPRING_BLOCK ) return true;
+	if ( getMapChip( x, y + CHIP_SIZE ) == MapObject::OBJ_BLOCK || getMapChip( x, y + CHIP_SIZE ) == MapObject::OBJ_UNBREAKABLE_BLOCK || getMapChip( x, y + CHIP_SIZE ) == MapObject::OBJ_SPRING_BLOCK ) return true;
 
 	return false;
 }
@@ -143,7 +155,8 @@ bool Map::hitCheck( float x, float y ) {
 }
 
 bool Map::isBlock( float x, float y ) {
-	if ( getMapChip( x, y ) == MapObject::OBJ_BLOCK ) return true;
+	//if ( getMapChip( x, y ) == MapObject::OBJ_BLOCK ) return true;
+	if ( getMapChip( x, y ) == MapObject::OBJ_BLOCK || getMapChip( x, y ) == MapObject::OBJ_UNBREAKABLE_BLOCK || getMapChip( x, y ) == MapObject::OBJ_SPRING_BLOCK ) return true;
 	else return false;
 }
 
@@ -163,7 +176,9 @@ bool Map::isGoal( float plX, float plY ) {
 	else return false;
 }
 
-void Map::draw( float cameraX, float cameraY ) {
+void Map::draw( float cameraX, float cameraY, bool stop ) {
+
+	// ブロックの描画
 	for ( Block* block : blocks ) {
 		float bL, bR, bT, bB;
 		bL = block->getX() - CHIP_SIZE * 0.5F;
@@ -171,18 +186,32 @@ void Map::draw( float cameraX, float cameraY ) {
 		bT = block->getY() - CHIP_SIZE * 0.5F;
 		bB = block->getY() + CHIP_SIZE * 0.5F - 1.0F;
 
+		DisappearingBlock* dBlock = dynamic_cast< DisappearingBlock* >( block );
+
 		if ( block->isBroken() ) { // 壊れたブロックの描画
 			if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
 				block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType() + block->brokenAnimationCount / 12] );
 			}
-			block->brokenAnimationCount++;
+			if ( !stop ) block->brokenAnimationCount++;
 		} else {
-			if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
-				block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType()] );
+			if ( dBlock != nullptr ) {
+				if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
+					if ( dBlock->isVisible() ) {
+						block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType()] );
+					}
+					if ( !stop ) dBlock->incrementVisibleCount();
+				}
+				//if ( !stop ) dBlock->incrementVisibleCount();
+			} else {
+				if ( !( bR < cameraX || bL > cameraX + 640.0F - 1.0F || bB < cameraY || bT > cameraY + 480.0F - 1.0F ) ) {
+					block->draw( cameraX, cameraY, Loader::imageHandles[block->getImageType()] );
+				}
 			}
 		}
+		
 	}
 
+	// ゴールの描画
 	float gL, gR, gT, gB;
 	gL = ( float )goalX * CHIP_SIZE;
 	gR = ( float )( goalX + 1 ) * CHIP_SIZE - 1.0F;
@@ -192,6 +221,23 @@ void Map::draw( float cameraX, float cameraY ) {
 		DrawGraph( ( int )( goalX * CHIP_SIZE - cameraX ), ( int )( goalY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::GOAL], TRUE );
 	}
 
+	// ワープポイントの描画
+	for ( Warp* w : warps ) {
+		int wX = w->getX();
+		int wY = w->getY();
+
+		float wL, wR, wT, wB;
+		wL = ( float )wX * CHIP_SIZE;
+		wR = ( float )( wX + 1 ) * CHIP_SIZE - 1.0F;
+		wT = ( float )wY * CHIP_SIZE;
+		wB = ( float )( wY + 1 ) * CHIP_SIZE - 1.0F;
+
+		if ( !( wR < cameraX || wL > cameraX + 640.0F - 1.0F || wB < cameraY || wT > cameraY + 480.0F - 1.0F ) ) {
+			DrawGraph( ( int )( wX * CHIP_SIZE - cameraX ), ( int )( wY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::WARP_1 + w->getAnimationCount() / 20], TRUE );
+		}
+		if ( !stop ) w->incrementAnimationCount();
+	}
+	/*
 	float wL, wR, wT, wB;
 	wL = ( float )warpX * CHIP_SIZE;
 	wR = ( float )( warpX + 1 ) * CHIP_SIZE - 1.0F;
@@ -200,5 +246,6 @@ void Map::draw( float cameraX, float cameraY ) {
 	if ( !( wR < cameraX || wL > cameraX + 640.0F - 1.0F || wB < cameraY || wT > cameraY + 480.0F - 1.0F ) ) {
 		DrawGraph( ( int )( warpX * CHIP_SIZE - cameraX ), ( int )( warpY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::WARP_1 + warpAnimationCount / 20], TRUE );
 	}
-	warpAnimationCount = ( warpAnimationCount + 1 ) % 40;
+	if ( !stop ) warpAnimationCount = ( warpAnimationCount + 1 ) % 40;
+	*/
 }

@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "NormalBlock.h"
+#include "SpringBlock.h"
 #include "UnbreakableBlock.h"
 #include "KeyBoard.h"
 #include "Loader.h"
@@ -13,7 +14,7 @@ Player::Player() : power( 2 ) {
 	y = 0.0F;
 	size = 32.0F;
 	speed = 3.0F;
-	jumpPower = 6.0F;
+	jumpPower = 5.0F;
 	selectedItemNum = 0;
 
 	direction = 1; // 1: 右, -1: 左
@@ -44,7 +45,12 @@ Block* Player::putBlock( float x, float y ) {
 
 	//int maxDurability = blocksList.at( selectedItemNum ).back()->getMaxDurability();
 	int imageType = blocksList.at( selectedItemNum ).back()->getImageType();
-	Block* block = new UnbreakableBlock( 0, 0, imageType );
+	Block* block = 0;
+	if ( imageType == Loader::SPRING_BLOCK ) {
+		SpringBlock* sb = dynamic_cast< SpringBlock* >( blocksList.at( selectedItemNum ).back() );
+		if ( sb != nullptr ) block = new SpringBlock( 0, 0, imageType, sb->getSpringCoefficient(), sb->getSpringPower() );
+	} else block = new UnbreakableBlock( 0, 0, imageType );
+
 	block->setPos( x, y );
 	
 	delete blocksList.at( selectedItemNum ).back();
@@ -62,9 +68,16 @@ Block* Player::putBlock( float x, float y ) {
 	return block;
 }
 
-void Player::getBlock( int maxDurability, int imageType ) {
+void Player::getBlock( Block* targetBlock ) {
+	//int maxDurability = targetBlock->getMaxDurability();
+	int imageType = targetBlock->getImageType();
 	//Block* block = new NormalBlock( 0, 0, maxDurability, imageType );
-	Block* block = new UnbreakableBlock( 0, 0, imageType );
+	
+	Block* block = 0;
+	if ( imageType == Loader::SPRING_BLOCK ) {
+		SpringBlock* sb = dynamic_cast< SpringBlock* >( targetBlock );
+		if ( sb != nullptr ) block = new SpringBlock( 0, 0, imageType, sb->getSpringCoefficient(), sb->getSpringPower() );
+	} else block = new UnbreakableBlock( 0, 0, imageType - 1 );
 	// 同じタイプのブロックを持っていないか探す．
 	/*
 	for ( std::vector<Block*> blocks : blocksList ) {

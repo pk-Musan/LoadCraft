@@ -27,7 +27,9 @@ private:
 	int warpCount;
 
 	bool pause;
+	bool operation;
 	int pauseCursor;
+	int operationPage;
 	int cursorAnimationCount;
 
 	bool readError;

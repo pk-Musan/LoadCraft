@@ -1,7 +1,18 @@
-﻿  GameScene.cpp
+﻿  Arrow.cpp
+C:\Users\murotani\source\repos\RoadCraft\Arrow.cpp(22,97): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\murotani\source\repos\RoadCraft\Arrow.cpp(22,52): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+  GameScene.cpp
+  Loader.cpp
+  main.cpp
+  Map.cpp
+  MenuScene.cpp
+  Player.cpp
+  SelectScene.cpp
+  TitleScene.cpp
+  Warp.cpp
   コード生成しています。
-  1 of 539 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  72 of 675 functions (10.7%) were compiled, the rest were copied from previous compilation.
+    40 functions were new in current compilation
+    39 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   RoadCraft.vcxproj -> C:\Users\murotani\source\repos\RoadCraft\Release\RoadCraft.exe

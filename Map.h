@@ -3,6 +3,7 @@
 
 #include "Block.h"
 #include "Warp.h"
+#include "Arrow.h"
 #include <vector>
 
 class Map {
@@ -27,6 +28,7 @@ private:
 	int startX, startY;
 	int warpX, warpY;
 	int goalX, goalY;
+	std::vector<Arrow*> arrows;
 	std::vector<Block*> blocks;
 	std::vector<Warp*> warps;
 	int warpAnimationCount;
@@ -43,6 +45,7 @@ public:
 	MapObject getMapChip( float tx, float ty );
 	Block* getBlock( float x, float y );
 
+	void setMapChip( float tx, float ty, MapObject o );
 	void putBlock( Block* block );
 	void eraseBlock();
 

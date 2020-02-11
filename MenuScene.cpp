@@ -26,7 +26,7 @@ Scene* MenuScene::update() {
 			page += 1;
 			if ( page > 1 ) page = 1;
 		}
-		if ( KeyBoard::key[KEY_INPUT_ESCAPE] == 1 ) {
+		if ( KeyBoard::key[KEY_INPUT_RETURN] == 1 ) {
 			description = false;
 			page = 0;
 		}
@@ -37,9 +37,9 @@ Scene* MenuScene::update() {
 		}
 		if ( KeyBoard::key[KEY_INPUT_DOWN] == 1 ) cursorPos = ( cursorPos + 1 ) % 2;
 
-		if ( KeyBoard::key[KEY_INPUT_SPACE] == 1 ) {
-			if ( cursorPos == 0 ) description = true;
-			else if ( cursorPos == 1 ) {
+		if ( KeyBoard::key[KEY_INPUT_RETURN] == 1 ) {
+			if ( cursorPos == 1 ) description = true;
+			else if ( cursorPos == 0 ) {
 				SelectScene* sScene = new SelectScene();
 				return sScene;
 			}
@@ -81,7 +81,7 @@ void MenuScene::draw() {
 			DrawStringToHandle( 114, 360, "壊せないブロック：その名のとおりである", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawStringToHandle( 290, 415, "1/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 480, 415, "Esc：戻る", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 450, 415, "Enter：閉じる", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawTriangleAA( 640 - 45, 480 / 2 - 15, 640 - 45, 480 / 2 + 15, 640 - 20, 480 / 2, GetColor( 255, 255, 255 ), TRUE );
 		} else if ( page == 1 ) {
@@ -101,7 +101,7 @@ void MenuScene::draw() {
 			DrawStringToHandle( 55, 370, "　置いてしまうとそれ以降こわせなくなるよ！", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawStringToHandle( 290, 415, "2/2", GetColor( 255, 255, 255 ), Font::fonts[1] );
-			DrawStringToHandle( 480, 415, "Esc：戻る", GetColor( 255, 255, 255 ), Font::fonts[1] );
+			DrawStringToHandle( 450, 415, "Enter：閉じる", GetColor( 255, 255, 255 ), Font::fonts[1] );
 
 			DrawTriangleAA( 45, 480 / 2 - 15, 45, 480 / 2 + 15, 20, 480 / 2, GetColor( 255, 255, 255 ), TRUE );
 		}
@@ -121,11 +121,11 @@ void MenuScene::draw() {
 		DrawGraph( standardX + 64, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
 		DrawGraph( standardX + 96, standardY, Loader::imageHandles[Loader::LEFT_ATTACK_1 + animationCount / 12], TRUE );
 		
-		DrawStringToHandle( 75 + 75, 100, "遊び方", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 75 + 75, 200, "遊び方", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
-		DrawStringToHandle( 75, 200, "ステージセレクト", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 75, 100, "ステージセレクト", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
-		DrawStringToHandle( 165, 360, "Press Space Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
+		DrawStringToHandle( 165, 360, "Press Enter Key", GetColor( 255, 255, 255 ), Font::fonts[2] );
 
 		animationCount = ( animationCount + 1 ) % 24;
 	}

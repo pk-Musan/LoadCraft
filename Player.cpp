@@ -13,7 +13,7 @@ Player::Player() : power( 2 ) {
 	x = 0.0F;
 	y = 0.0F;
 	size = 32.0F;
-	speed = 3.0F;
+	speed = 0.5F;
 	jumpPower = 5.0F;
 	selectedItemNum = 0;
 

@@ -54,6 +54,21 @@
     <ClCompile Include="Loader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DisappearingBlock.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringBlock.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Warp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -101,9 +116,125 @@
     <ClInclude Include="Loader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DisappearingBlock.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringBlock.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Warp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="stageData1.txt" />
-    <Text Include="stageData2.txt" />
+    <Text Include="Stage\stageData10.txt" />
+    <Text Include="Stage\stageData11.txt" />
+    <Text Include="Stage\stageData9.txt" />
+    <Text Include="Stage\stageData8.txt" />
+    <Text Include="Stage\stageData7.txt" />
+    <Text Include="Stage\stageData6.txt" />
+    <Text Include="Stage\stageData5.txt" />
+    <Text Include="Stage\stageData4.txt" />
+    <Text Include="Stage\stageData3.txt" />
+    <Text Include="Stage\stageData2.txt" />
+    <Text Include="Stage\stageData1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Asset\any_key1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\any_key2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\arrow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block1_broken.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block1_cracked.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block2_broken.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\block2_cracked.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\disappearing_block.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\goal.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_left.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_left_attack1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_left_attack2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_left_walk1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_left_walk2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_right.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_right_attack1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_right_attack2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_right_walk1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\player_right_walk2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\press1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\press2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\spring_block.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\spring_block_broken.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\target.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\title.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\unbreakable_block.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\warp1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Asset\warp2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

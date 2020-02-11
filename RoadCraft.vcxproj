@@ -152,7 +152,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="DisappearingBlock.cpp" />
     <ClCompile Include="EndingScene.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -163,13 +166,18 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SelectScene.cpp" />
+    <ClCompile Include="SpringBlock.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UnbreakableBlock.cpp" />
+    <ClCompile Include="Warp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="DisappearingBlock.h" />
     <ClInclude Include="EndingScene.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="Loader.h" />
@@ -180,12 +188,55 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SelectScene.h" />
+    <ClInclude Include="SpringBlock.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UnbreakableBlock.h" />
+    <ClInclude Include="Warp.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="stageData1.txt" />
-    <Text Include="stageData2.txt" />
+    <Text Include="Stage\stageData1.txt" />
+    <Text Include="Stage\stageData10.txt" />
+    <Text Include="Stage\stageData11.txt" />
+    <Text Include="Stage\stageData2.txt" />
+    <Text Include="Stage\stageData3.txt" />
+    <Text Include="Stage\stageData4.txt" />
+    <Text Include="Stage\stageData5.txt" />
+    <Text Include="Stage\stageData6.txt" />
+    <Text Include="Stage\stageData7.txt" />
+    <Text Include="Stage\stageData8.txt" />
+    <Text Include="Stage\stageData9.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Asset\any_key1.png" />
+    <Image Include="Asset\any_key2.png" />
+    <Image Include="Asset\arrow.png" />
+    <Image Include="Asset\block1.png" />
+    <Image Include="Asset\block1_broken.png" />
+    <Image Include="Asset\block1_cracked.png" />
+    <Image Include="Asset\block2.png" />
+    <Image Include="Asset\block2_broken.png" />
+    <Image Include="Asset\block2_cracked.png" />
+    <Image Include="Asset\disappearing_block.png" />
+    <Image Include="Asset\goal.png" />
+    <Image Include="Asset\player_left.png" />
+    <Image Include="Asset\player_left_attack1.png" />
+    <Image Include="Asset\player_left_attack2.png" />
+    <Image Include="Asset\player_left_walk1.png" />
+    <Image Include="Asset\player_left_walk2.png" />
+    <Image Include="Asset\player_right.png" />
+    <Image Include="Asset\player_right_attack1.png" />
+    <Image Include="Asset\player_right_attack2.png" />
+    <Image Include="Asset\player_right_walk1.png" />
+    <Image Include="Asset\player_right_walk2.png" />
+    <Image Include="Asset\press1.png" />
+    <Image Include="Asset\press2.png" />
+    <Image Include="Asset\spring_block.png" />
+    <Image Include="Asset\spring_block_broken.png" />
+    <Image Include="Asset\target.png" />
+    <Image Include="Asset\title.png" />
+    <Image Include="Asset\unbreakable_block.png" />
+    <Image Include="Asset\warp1.png" />
+    <Image Include="Asset\warp2.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

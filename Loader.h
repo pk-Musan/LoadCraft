@@ -42,6 +42,8 @@ public:
 		WARP_2,
 		GOAL,
 
+		ARROW,
+
 		MAX_INDEX
 	};
 	static int imageHandles[];

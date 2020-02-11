@@ -42,6 +42,8 @@ void Loader::loadGraph() {
 	imageHandles[WARP_1] = LoadGraph( "Asset/warp1.png" );
 	imageHandles[WARP_2] = LoadGraph( "Asset/warp2.png" );
 	imageHandles[GOAL] = LoadGraph( "Asset/goal.png" );
+
+	imageHandles[ARROW] = LoadGraph( "Asset/arrow.png" );
 }
 
 void Loader::deleteGraph() {

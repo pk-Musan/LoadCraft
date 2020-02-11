@@ -35,6 +35,15 @@ Map::Map( const char* stageData, int fileSize ) : CHIP_SIZE( 32.0F ), startX( 0 
 			case 'p': o = MapObject::OBJ_SPACE; startX = x; startY = y; break;
 			case 'w': o = MapObject::OBJ_WARP; warps.push_back( new Warp( x, y ) ); break;
 			case 'g': o = MapObject::OBJ_GOAL; goalX = x; goalY = y; break;
+			case 'U': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 0 ) ); break;
+			case 'I': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 1 ) ); break;
+			case 'R': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 2 ) ); break;
+			case 'F': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 3 ) ); break;
+			case 'D': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 4 ) ); break;
+			case 'S': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 5 ) ); break;
+			case 'L': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 6 ) ); break;
+			case 'O': o = MapObject::OBJ_SPACE; arrows.push_back( new Arrow( x, y, 7 ) ); break;
+
 			case '\n': x = 0; y++; o = MapObject::OBJ_UNKNOWN; break;
 
 			default: o = MapObject::OBJ_UNBREAKABLE_BLOCK; blocks.push_back( new UnbreakableBlock( x, y, Loader::UNBREAKABLE_BLOCK ) ); break;
@@ -100,10 +109,21 @@ Map::MapObject Map::getMapChip( float tx, float ty ) {
 Block* Map::getBlock( float x, float y ) {
 	if ( isBlock( x, y ) ) {
 		for ( Block* b : blocks ) {
-			if ( b->getX() == x && b->getY() == y ) return b;
+			if ( b->getX() == x && b->getY() == y && !b->isBroken() ) return b;
 		}
 		return nullptr;
 	} else return nullptr;
+}
+
+void Map::setMapChip( float tx, float ty, MapObject o ) {
+	if ( tx < 0.0F || ty < 0.0F || tx >= ( float )width * CHIP_SIZE || ty >= ( float )height * CHIP_SIZE ) {
+		return;
+	} else {
+		int x, y;
+		x = ( int )( tx / CHIP_SIZE );
+		y = ( int )( ty / CHIP_SIZE );
+		mapObjects[y * width + x] = o;
+	}
 }
 
 void Map::putBlock( Block* block ) {
@@ -177,6 +197,10 @@ bool Map::isGoal( float plX, float plY ) {
 }
 
 void Map::draw( float cameraX, float cameraY, bool stop ) {
+	// 矢印の描画
+	for ( Arrow* arrow : arrows ) {
+		arrow->draw( cameraX, cameraY, CHIP_SIZE );
+	}
 
 	// ブロックの描画
 	for ( Block* block : blocks ) {
@@ -222,7 +246,8 @@ void Map::draw( float cameraX, float cameraY, bool stop ) {
 	}
 
 	// ワープポイントの描画
-	for ( Warp* w : warps ) {
+	for ( Warp* warp : warps ) {
+		/*
 		int wX = w->getX();
 		int wY = w->getY();
 
@@ -235,8 +260,11 @@ void Map::draw( float cameraX, float cameraY, bool stop ) {
 		if ( !( wR < cameraX || wL > cameraX + 640.0F - 1.0F || wB < cameraY || wT > cameraY + 480.0F - 1.0F ) ) {
 			DrawGraph( ( int )( wX * CHIP_SIZE - cameraX ), ( int )( wY * CHIP_SIZE - cameraY ), Loader::imageHandles[Loader::WARP_1 + w->getAnimationCount() / 20], TRUE );
 		}
-		if ( !stop ) w->incrementAnimationCount();
+		*/
+		warp->draw( cameraX, cameraY, CHIP_SIZE );
+		if ( !stop ) warp->incrementAnimationCount();
 	}
+
 	/*
 	float wL, wR, wT, wB;
 	wL = ( float )warpX * CHIP_SIZE;

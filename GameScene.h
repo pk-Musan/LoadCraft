@@ -14,6 +14,8 @@ private:
 	float dx, dy; // x, y方向の移動量
 	float jumpSpeed; // y方向の速さ
 	float g; // 重力加速度
+	float moveSpeed; // x方向の速さ
+	float a; // x方向の加速度
 
 	const char* filename;
 	Map* map = 0; // マップ
